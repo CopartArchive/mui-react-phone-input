@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "build": "npx nwb build-react-component",
-    "clean": "npx nwb clean-module && npx clean-demo",
-    "start": "nwb serve-react-demo",
+    "clean": "npx nwb clean-module && npx nwb clean-demo",
+    "start": "npx nwb serve-react-demo",
     "lint": "eslint src",
     "test": "jest",
     "test: coverage": "jest --coverage",
