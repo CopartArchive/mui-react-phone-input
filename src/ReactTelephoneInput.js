@@ -1,31 +1,33 @@
 // TODO - fix the onlyContries props. Currently expects that as an array of country object, but users should be able to send in array of country isos
 
-var some = require('lodash/some')
-var find = require('lodash/find')
-var reduce = require('lodash/reduce')
-var map = require('lodash/map')
-var filter = require('lodash/filter')
-var findIndex = require('lodash/findIndex')
-var first = require('lodash/first')
-var tail = require('lodash/tail')
-var debounce = require('lodash/debounce')
-var memoize = require('lodash/memoize')
-var assign = require('lodash/assign')
-var isEqual = require('lodash/isEqual')
-// import lodash string methods
-var trim = require('lodash/trim')
-var startsWith = require('lodash/startsWith')
-var PropTypes = require('prop-types')
-var createReactClass = require('create-react-class')
+import some from 'lodash/some';
 
-var React = require('react')
-var ReactDOM = require('react-dom')
-var onClickOutside = require('react-onclickoutside').default
-var classNames = require('classnames')
-var countryData = require('country-telephone-data')
-var allCountries = countryData.allCountries
-var iso2Lookup = countryData.iso2Lookup
-var allCountryCodes = countryData.allCountryCodes
+import find from 'lodash/find';
+import reduce from 'lodash/reduce';
+import map from 'lodash/map';
+import filter from 'lodash/filter';
+import findIndex from 'lodash/findIndex';
+import first from 'lodash/first';
+import tail from 'lodash/tail';
+import debounce from 'lodash/debounce';
+import memoize from 'lodash/memoize';
+import assign from 'lodash/assign';
+import isEqual from 'lodash/isEqual';
+
+// import lodash string methods
+import trim from 'lodash/trim';
+
+import startsWith from 'lodash/startsWith';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import onClickOutside from 'react-onclickoutside';
+import classNames from 'classnames';
+import countryData from 'country-telephone-data';
+const allCountries = countryData.allCountries;
+const iso2Lookup = countryData.iso2Lookup;
+const allCountryCodes = countryData.allCountryCodes;
 
 if (typeof document !== 'undefined') {
     var isModernBrowser = Boolean(
@@ -35,7 +37,7 @@ if (typeof document !== 'undefined') {
     var isModernBrowser = true
 }
 
-var keys = {
+const keys = {
     UP: 38,
     DOWN: 40,
     RIGHT: 39,
@@ -46,33 +48,29 @@ var keys = {
     A: 65,
     Z: 90,
     SPACE: 32
-}
+};
 
 function isNumberValid(inputNumber) {
-    var countries = countryData.allCountries
-    return some(countries, function(country) {
-        return (
-            startsWith(inputNumber, country.dialCode) ||
-            startsWith(country.dialCode, inputNumber)
-        )
-    })
+    const countries = countryData.allCountries;
+    return some(countries, country => startsWith(inputNumber, country.dialCode) ||
+    startsWith(country.dialCode, inputNumber))
 }
 
-export var ReactTelephoneInput = createReactClass({
+export const ReactTelephoneInput = createReactClass({
     getInitialState() {
-        var preferredCountries = this.props.preferredCountries
+        const preferredCountries = this.props.preferredCountries
             .map(
                 iso2 =>
                     iso2Lookup.hasOwnProperty(iso2)
                         ? allCountries[iso2Lookup[iso2]]
                         : null
             )
-            .filter(val => val !== null)
+            .filter(val => val !== null);
 
         return assign(
             {},
             {
-                preferredCountries: preferredCountries,
+                preferredCountries,
                 showDropDown: false,
                 queryString: '',
                 freezeSelection: false,
@@ -106,7 +104,7 @@ export var ReactTelephoneInput = createReactClass({
             defaultCountry: allCountries[0].iso2,
             isValid: isNumberValid,
             flagsImagePath: 'flags.png',
-            onEnterKeyPress: function() {},
+            onEnterKeyPress() {},
             preferredCountries: [],
             disabled: false,
             placeholder: '+1 (702) 123-4567',
@@ -149,25 +147,25 @@ export var ReactTelephoneInput = createReactClass({
             return
         }
 
-        var container = ReactDOM.findDOMNode(this.refs.flagDropdownList)
+        const container = ReactDOM.findDOMNode(this.refs.flagDropdownList);
 
         if (!container) {
             return
         }
 
-        var containerHeight = container.offsetHeight
-        var containerOffset = container.getBoundingClientRect()
-        var containerTop = containerOffset.top + document.body.scrollTop
-        var containerBottom = containerTop + containerHeight
+        const containerHeight = container.offsetHeight;
+        const containerOffset = container.getBoundingClientRect();
+        const containerTop = containerOffset.top + document.body.scrollTop;
+        const containerBottom = containerTop + containerHeight;
 
-        var element = country
-        var elementOffset = element.getBoundingClientRect()
+        const element = country;
+        const elementOffset = element.getBoundingClientRect();
 
-        var elementHeight = element.offsetHeight
-        var elementTop = elementOffset.top + document.body.scrollTop
-        var elementBottom = elementTop + elementHeight
-        var newScrollTop = elementTop - containerTop + container.scrollTop
-        var middleOffset = containerHeight / 2 - elementHeight / 2
+        const elementHeight = element.offsetHeight;
+        const elementTop = elementOffset.top + document.body.scrollTop;
+        const elementBottom = elementTop + elementHeight;
+        let newScrollTop = elementTop - containerTop + container.scrollTop;
+        const middleOffset = containerHeight / 2 - elementHeight / 2;
 
         if (elementTop < containerTop) {
             // scroll up
@@ -180,7 +178,7 @@ export var ReactTelephoneInput = createReactClass({
             if (middle) {
                 newScrollTop += middleOffset
             }
-            var heightDifference = containerHeight - elementHeight
+            const heightDifference = containerHeight - elementHeight;
             container.scrollTop = newScrollTop - heightDifference
         }
     },
@@ -195,9 +193,9 @@ export var ReactTelephoneInput = createReactClass({
             return `+${text}`
         }
 
-        var formattedObject = reduce(
+        const formattedObject = reduce(
             pattern,
-            function(acc, character) {
+            (acc, character) => {
                 if (acc.remainingText.length === 0) {
                     return acc
                 }
@@ -215,7 +213,7 @@ export var ReactTelephoneInput = createReactClass({
                 }
             },
             { formattedText: '', remainingText: text.split('') }
-        )
+        );
         return (
             formattedObject.formattedText +
             formattedObject.remainingText.join('')
@@ -224,28 +222,28 @@ export var ReactTelephoneInput = createReactClass({
 
     // put the cursor to the end of the input (usually after a focus event)
     _cursorToEnd(skipFocus) {
-        var input = this.refs.numberInput
+        const input = this.refs.numberInput;
         if (skipFocus) {
             this._fillDialCode()
         } else {
             input.focus()
 
             if (isModernBrowser) {
-                var len = input.value.length
+                const len = input.value.length;
                 input.setSelectionRange(len, len)
             }
         }
     },
     // memoize results based on the first 5/6 characters. That is all that matters
-    guessSelectedCountry: function(inputNumber) {
-        var secondBestGuess =
+    guessSelectedCountry(inputNumber) {
+        const secondBestGuess =
             find(allCountries, { iso2: this.props.defaultCountry }) ||
-            this.props.onlyCountries[0]
-        var inputNumberForCountries = inputNumber.substr(0, 4)
+            this.props.onlyCountries[0];
+        const inputNumberForCountries = inputNumber.substr(0, 4);
         if (trim(inputNumber) !== '') {
             var bestGuess = reduce(
                 this.props.onlyCountries,
-                function(selectedCountry, country) {
+                (selectedCountry, country) => {
                     // if the country dialCode exists WITH area code
 
                     if (
@@ -334,9 +332,9 @@ export var ReactTelephoneInput = createReactClass({
         )
     },
     handleInput(event) {
-        var formattedNumber = '+',
-            newSelectedCountry = this.state.selectedCountry,
-            freezeSelection = this.state.freezeSelection
+        let formattedNumber = '+';
+        let newSelectedCountry = this.state.selectedCountry;
+        let freezeSelection = this.state.freezeSelection;
 
         // if the input is the same as before, must be some special key like enter etc.
         if (event.target.value === this.state.formattedNumber) {
@@ -352,7 +350,7 @@ export var ReactTelephoneInput = createReactClass({
 
         if (event.target.value.length > 0) {
             // before entering the number in new format, lets check if the dial code now matches some other country
-            var inputNumber = event.target.value.replace(/\D/g, '')
+            const inputNumber = event.target.value.replace(/\D/g, '');
 
             // we don't need to send the whole number to guess the country... only the first 6 characters are enough
             // the guess country function can then use memoization much more effectively since the set of input it gets has drastically reduced
@@ -372,14 +370,14 @@ export var ReactTelephoneInput = createReactClass({
             )
         }
 
-        var caretPosition = event.target.selectionStart
-        var oldFormattedText = this.state.formattedNumber
-        var diff = formattedNumber.length - oldFormattedText.length
+        let caretPosition = event.target.selectionStart;
+        const oldFormattedText = this.state.formattedNumber;
+        const diff = formattedNumber.length - oldFormattedText.length;
 
         this.setState(
             {
-                formattedNumber: formattedNumber,
-                freezeSelection: freezeSelection,
+                formattedNumber,
+                freezeSelection,
                 selectedCountry:
                     newSelectedCountry.dialCode.length > 0
                         ? newSelectedCountry
@@ -419,29 +417,29 @@ export var ReactTelephoneInput = createReactClass({
         this.setState({ showDropDown: false })
     },
     handleFlagItemClick(country) {
-        var currentSelectedCountry = this.state.selectedCountry
-        var nextSelectedCountry = find(this.props.onlyCountries, country)
+        const currentSelectedCountry = this.state.selectedCountry;
+        const nextSelectedCountry = find(this.props.onlyCountries, country);
 
         // tiny optimization
         if (currentSelectedCountry.iso2 !== nextSelectedCountry.iso2) {
-            var dialCodeRegex = RegExp(
-                '^(\\+' + currentSelectedCountry.dialCode + ')|\\+'
-            )
-            var newNumber = this.state.formattedNumber.replace(
+            const dialCodeRegex = RegExp(
+                `^(\\+${currentSelectedCountry.dialCode})|\\+`
+            );
+            const newNumber = this.state.formattedNumber.replace(
                 dialCodeRegex,
-                '+' + nextSelectedCountry.dialCode
-            )
-            var formattedNumber = this.formatNumber(
+                `+${nextSelectedCountry.dialCode}`
+            );
+            const formattedNumber = this.formatNumber(
                 newNumber.replace(/\D/g, ''),
                 nextSelectedCountry.format
-            )
+            );
 
             this.setState(
                 {
                     showDropDown: false,
                     selectedCountry: nextSelectedCountry,
                     freezeSelection: true,
-                    formattedNumber: formattedNumber
+                    formattedNumber
                 },
                 function() {
                     this._cursorToEnd()
@@ -503,20 +501,20 @@ export var ReactTelephoneInput = createReactClass({
         return {
             selectedCountry: selectedCountryGuess,
             highlightCountryIndex: selectedCountryGuessIndex,
-            formattedNumber: formattedNumber
+            formattedNumber
         }
     },
     _fillDialCode() {
         // if the input is blank, insert dial code of the selected country
         if (this.refs.numberInput.value === '+') {
             this.setState({
-                formattedNumber: '+' + this.state.selectedCountry.dialCode
+                formattedNumber: `+${this.state.selectedCountry.dialCode}`
             })
         }
     },
     _getHighlightCountryIndex(direction) {
         // had to write own function because underscore does not have findIndex. lodash has it
-        var highlightCountryIndex = this.state.highlightCountryIndex + direction
+        const highlightCountryIndex = this.state.highlightCountryIndex + direction;
 
         if (
             highlightCountryIndex < 0 ||
@@ -535,16 +533,14 @@ export var ReactTelephoneInput = createReactClass({
             return null
         }
         // don't include the preferred countries in search
-        var probableCountries = filter(
+        const probableCountries = filter(
             this.props.onlyCountries,
-            function(country) {
-                return startsWith(
-                    country.name.toLowerCase(),
-                    queryString.toLowerCase()
-                )
-            },
+            country => startsWith(
+                country.name.toLowerCase(),
+                queryString.toLowerCase()
+            ),
             this
-        )
+        );
         return probableCountries[0]
     }),
     searchCountry() {
@@ -573,7 +569,7 @@ export var ReactTelephoneInput = createReactClass({
             event.returnValue = false
         }
 
-        var self = this
+        const self = this;
         function _moveHighlight(direction) {
             self.setState(
                 {
@@ -637,10 +633,10 @@ export var ReactTelephoneInput = createReactClass({
         }
     },
     getCountryDropDownList() {
-        var self = this
-        var countryDropDownList = map(
+        const self = this;
+        const countryDropDownList = map(
             this.state.preferredCountries.concat(this.props.onlyCountries),
-            function(country, index) {
+            (country, index) => {
                 let itemClasses = classNames({
                     country: true,
                     preferred:
@@ -650,7 +646,7 @@ export var ReactTelephoneInput = createReactClass({
                     highlight: self.state.highlightCountryIndex === index
                 })
 
-                var inputFlagClasses = `flag ${country.iso2}`
+                const inputFlagClasses = `flag ${country.iso2}`;
 
                 return (
                     <li
@@ -670,12 +666,12 @@ export var ReactTelephoneInput = createReactClass({
                             {country.name}
                         </span>
                         <span className="dial-code">
-                            {'+' + country.dialCode}
+                            {`+${country.dialCode}`}
                         </span>
                     </li>
                 )
             }
-        )
+        );
 
         const dashedLi = <li key={'dashes'} className="divider" />
         // let's insert a dashed line in between preffered countries and the rest
@@ -711,23 +707,23 @@ export var ReactTelephoneInput = createReactClass({
         }
     },
     render() {
-        var arrowClasses = classNames({
+        const arrowClasses = classNames({
             arrow: true,
             up: this.state.showDropDown
-        })
-        var inputClasses = classNames({
+        });
+        const inputClasses = classNames({
             'form-control': true,
             'invalid-number': !this.props.isValid(
                 this.state.formattedNumber.replace(/\D/g, '')
             )
-        })
+        });
 
-        var flagViewClasses = classNames({
+        const flagViewClasses = classNames({
             'flag-dropdown': true,
             'open-dropdown': this.state.showDropDown
-        })
+        });
 
-        var inputFlagClasses = `flag ${this.state.selectedCountry.iso2}`
+        const inputFlagClasses = `flag ${this.state.selectedCountry.iso2}`;
         let otherProps = {}
         if (this.props.inputId) {
             otherProps.id = this.props.inputId
@@ -783,6 +779,6 @@ export var ReactTelephoneInput = createReactClass({
             </div>
         )
     }
-})
+});
 
 export default onClickOutside(ReactTelephoneInput)
