@@ -48,13 +48,15 @@
     "chai": "^3.0.0",
     "dirty-chai": "^1.2.2",
     "enzyme": "^2.7.1",
-    "eslint": "0.23.0",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0",
     "jest": "20.0.4",
     "npx": "^9.6.0",
     "nwb": "0.18.x",
-    "react": "^15.x",
     "react-addons-test-utils": "15.6.0",
-    "react-dom": "^15.3.2",
     "react-test-renderer": "15.6.1",
     "regenerator-runtime": "0.10.5"
   },
@@ -65,6 +67,8 @@
     "lodash": "4.17.4",
     "material-ui": "0.15.4",
     "prop-types": "^15.5.10",
+    "react": "^15.x",
+    "react-dom": "^15.3.2",
     "react-onclickoutside": "^6.5.0"
   },
   "peerDependencies": {
