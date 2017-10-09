@@ -70,7 +70,8 @@
     "prop-types": "^15.5.10",
     "react": "^15.x",
     "react-dom": "^15.3.2",
-    "react-onclickoutside": "^6.5.0"
+    "react-onclickoutside": "^6.5.0",
+    "react-tap-event-plugin": "1.0.0"
   },
   "peerDependencies": {
     "react": ">=0.14.0 || ^15.0.0"

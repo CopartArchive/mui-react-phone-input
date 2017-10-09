@@ -21,6 +21,7 @@ import startsWith from 'lodash/startsWith';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import onClickOutside from 'react-onclickoutside';
 import classNames from 'classnames';
 import countryData from 'country-telephone-data';
@@ -28,6 +29,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import '../less/default.less';
+
 
 const allCountries = countryData.allCountries;
 const iso2Lookup = countryData.iso2Lookup;
@@ -274,7 +276,7 @@ class ReactTelephoneInput extends React.Component {
               className={itemClasses}
               data-dial-code="1"
               data-country-code={country.iso2}
-              onClick={self.handleFlagItemClick.bind(self, country)}
+              onTouchTap={self.handleFlagItemClick.bind(self, country)}
               leftIcon={<FlagIcon inputFlagClasses={inputFlagClasses} />}
               primaryText={<CountryText name={country.name} dialCode={country.dialCode} />}
             />
@@ -369,7 +371,7 @@ class ReactTelephoneInput extends React.Component {
         input.focus()
 
         if (isModernBrowser) {
-          const len = input.value.length;
+          const len = input.value && input.value.length;
           input.setSelectionRange(len, len)
         }
       }
@@ -749,7 +751,7 @@ class ReactTelephoneInput extends React.Component {
             >
             <div
               ref="selectedFlag"
-              onClick={this.handleFlagDropdownClick}
+              onTouchTap={this.handleFlagDropdownClick}
               className="selected-flag"
               title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
               role="menuitem"
