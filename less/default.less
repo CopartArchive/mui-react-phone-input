@@ -2,6 +2,7 @@
 .react-tel-input {
     display: flex;
     width: 250px;
+    align-items: center;
     @import 'countries.less';
     * {
         box-sizing: border-box;
@@ -66,14 +67,12 @@
         border-radius: 3px 0 0 3px;
         .flag {
             margin-top: -5px;
+            display: inline-block;
         }
         .arrow {
-            position: relative;
-            top: 50%;
-            margin-top: -2px;
-            left: 20px;
             width: 0;
             height: 0;
+            display: inline-block;
             border-left: 3px solid transparent;
             border-right: 3px solid transparent;
             border-top: 4px solid #555;
@@ -85,11 +84,9 @@
     }
     .country-list {
         list-style: none;
-        position: absolute;
         z-index: 15;
         padding: 0;
         margin: -1px 0 0 -1px;
-        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
         background-color: white;
         border: 1px solid #ccc;
         width: 400px;
@@ -97,14 +94,6 @@
         overflow-y: scroll;
         border-radius: 0 0 3px 3px;
         top: 26px;
-        .flag {
-            display: inline-block;
-        }
-        .divider {
-            padding-bottom: 5px;
-            margin-bottom: 5px;
-            border-bottom: 1px solid #ccc;
-        }
         .country {
             padding: 5px 10px;
             .dial-code {
@@ -120,6 +109,7 @@
         .flag {
             margin-right: 6px;
             margin-top: 2px;
+            display: inline-block;
         }
         .country-name {
             margin-right: 6px;

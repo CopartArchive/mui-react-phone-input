@@ -3,7 +3,7 @@
 // but users should be able to send in array of country isos
 
 import some from 'lodash/some';
-import '../less/default.less';
+
 import find from 'lodash/find';
 import reduce from 'lodash/reduce';
 import map from 'lodash/map';
@@ -27,6 +27,7 @@ import countryData from 'country-telephone-data';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
+import '../less/default.less';
 
 const allCountries = countryData.allCountries;
 const iso2Lookup = countryData.iso2Lookup;
@@ -146,20 +147,7 @@ class ReactTelephoneInput extends React.Component {
   getValue() {
     return this.getNumber()
   }
-  // put the cursor to the end of the input (usually after a focus event)
-  _cursorToEnd(skipFocus) {
-    const input = this.numberInput;
-    if (skipFocus) {
-      this._fillDialCode()
-    } else {
-      input.focus()
 
-      if (isModernBrowser) {
-        const len = input.value.length;
-        input.setSelectionRange(len, len)
-      }
-    }
-  }
   // memoize results based on the first 5/6 characters. That is all that matters
   guessSelectedCountry(inputNumber) {
     const secondBestGuess =
@@ -582,13 +570,14 @@ class ReactTelephoneInput extends React.Component {
               data-country-code={country.iso2}
               onClick={self.handleFlagItemClick.bind(self, country)}
               leftIcon={<FlagIcon inputFlagClasses={inputFlagClasses} />}
-            >
-              <span className="country-name">
+              primaryText={<span><span className="country-name">
                 {country.name}
               </span>
               <span className="dial-code">
                 {`+${country.dialCode}`}
-              </span>
+              </span></span>}
+            >
+
             </ListItem>
           )
         }
@@ -611,6 +600,20 @@ class ReactTelephoneInput extends React.Component {
           {countryDropDownList}
         </List>
       )
+    }
+    // put the cursor to the end of the input (usually after a focus event)
+    _cursorToEnd(skipFocus) {
+      const input = this.numberInput;
+      if (skipFocus) {
+        this._fillDialCode()
+      } else {
+        input.focus()
+
+        if (isModernBrowser) {
+          const len = input.value.length;
+          input.setSelectionRange(len, len)
+        }
+      }
     }
     formatNumber(text, pattern) {
       if (!text || text.length === 0) {
