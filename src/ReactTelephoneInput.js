@@ -129,7 +129,6 @@ class ReactTelephoneInput extends React.Component {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeydown)
-
     this._cursorToEnd(true)
     if (typeof this.props.onChange === 'function') {
       this.props.onChange(
@@ -743,22 +742,21 @@ class ReactTelephoneInput extends React.Component {
             this.props.className
           )}
         >
-        <div
-          ref={(input) => { this.flagDropDownButton = input; }}
-          className={flagViewClasses}
-          onKeyDown={this.handleKeydown}
-          role="menu"
-        >
           <div
-            ref="selectedFlag"
-            onClick={this.handleFlagDropdownClick}
-            className="selected-flag"
-            title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
-            role="menuitem"
-          >
-            <FlagIcon inputFlagClasses={inputFlagClasses} />
-            <div className={arrowClasses} />
-          </div>
+            ref={(input) => { this.flagDropDownButton = input; }}
+            className={flagViewClasses}
+            onKeyDown={this.handleKeydown}
+            >
+            <div
+              ref="selectedFlag"
+              onClick={this.handleFlagDropdownClick}
+              className="selected-flag"
+              title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
+              role="menuitem"
+            >
+              <FlagIcon inputFlagClasses={inputFlagClasses} />
+              <div className={arrowClasses} />
+            </div>
           {showDropDown ? this.getCountryDropDownList() : ''}
         </div>
           <TextField
