@@ -13,6 +13,7 @@
     "no-underscore-dangle": [0],
     "semi": [0],
     "comma-dangle": [0],
-    "linebreak-style": [0]
+    "linebreak-style": [0],
+    "jsx-filename-extension": [0]
   }
 }

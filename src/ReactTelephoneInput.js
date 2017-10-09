@@ -3,7 +3,7 @@
 // but users should be able to send in array of country isos
 
 import some from 'lodash/some';
-
+import '../less/default.less';
 import find from 'lodash/find';
 import reduce from 'lodash/reduce';
 import map from 'lodash/map';
@@ -15,10 +15,8 @@ import debounce from 'lodash/debounce';
 import memoize from 'lodash/memoize';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
-
 // import lodash string methods
 import trim from 'lodash/trim';
-
 import startsWith from 'lodash/startsWith';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -27,7 +25,7 @@ import onClickOutside from 'react-onclickoutside';
 import classNames from 'classnames';
 import countryData from 'country-telephone-data';
 import TextField from 'material-ui/TextField';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
+import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 
 const allCountries = countryData.allCountries;
@@ -49,6 +47,13 @@ const keys = {
   SPACE: 32
 };
 
+const getFlagStyle = (flagsImagePath = 'images/flags.png') => ({
+  width: 16,
+  height: 11,
+  backgroundImage: `url(${flagsImagePath})`
+})
+const FlagIcon = ({ inputFlagClasses }) =>
+(<div className={inputFlagClasses} style={getFlagStyle()} />)
 function isNumberValid(inputNumber) {
   const countries = countryData.allCountries;
   return some(countries, country => startsWith(inputNumber, country.dialCode) ||
@@ -141,83 +146,6 @@ class ReactTelephoneInput extends React.Component {
   getValue() {
     return this.getNumber()
   }
-  scrollTo(country, middle) {
-    if (!country) {
-      return
-    }
-
-    const container = ReactDOM.findDOMNode(this.refs.flagDropdownList);
-
-    if (!container) {
-      return
-    }
-
-    const containerHeight = container.offsetHeight;
-    const containerOffset = container.getBoundingClientRect();
-    const containerTop = containerOffset.top + document.body.scrollTop;
-    const containerBottom = containerTop + containerHeight;
-
-    const element = country;
-    const elementOffset = element.getBoundingClientRect();
-
-    const elementHeight = element.offsetHeight;
-    const elementTop = elementOffset.top + document.body.scrollTop;
-    const elementBottom = elementTop + elementHeight;
-    let newScrollTop = elementTop - containerTop + container.scrollTop;
-    const middleOffset = containerHeight / 2 - elementHeight / 2;
-
-    if (elementTop < containerTop) {
-      // scroll up
-      if (middle) {
-        newScrollTop -= middleOffset
-      }
-      container.scrollTop = newScrollTop
-    } else if (elementBottom > containerBottom) {
-      // scroll down
-      if (middle) {
-        newScrollTop += middleOffset
-      }
-      const heightDifference = containerHeight - elementHeight;
-      container.scrollTop = newScrollTop - heightDifference
-    }
-  }
-  formatNumber(text, pattern) {
-    if (!text || text.length === 0) {
-      return '+'
-    }
-
-    // for all strings with length less than 3, just return it (1, 2 etc.)
-    // also return the same text if the selected country has no fixed format
-    if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
-      return `+${text}`
-    }
-
-    const formattedObject = reduce(
-      pattern,
-      (acc, character) => {
-        if (acc.remainingText.length === 0) {
-          return acc
-        }
-
-        if (character !== '.') {
-          return {
-            formattedText: acc.formattedText + character,
-            remainingText: acc.remainingText
-          }
-        }
-
-        return {
-          formattedText: acc.formattedText + first(acc.remainingText),
-          remainingText: tail(acc.remainingText)
-        }
-      },
-      { formattedText: '', remainingText: text.split('') }
-    );
-    return (
-      formattedObject.formattedText +
-            formattedObject.remainingText.join('')
-    )
-  }
   // put the cursor to the end of the input (usually after a focus event)
   _cursorToEnd(skipFocus) {
     const input = this.numberInput;
@@ -238,8 +166,9 @@ class ReactTelephoneInput extends React.Component {
             find(allCountries, { iso2: this.props.defaultCountry }) ||
             this.props.onlyCountries[0];
     const inputNumberForCountries = inputNumber.substr(0, 4);
+    let bestGuess
     if (trim(inputNumber) !== '') {
-      var bestGuess = reduce(
+      bestGuess = reduce(
         this.props.onlyCountries,
         (selectedCountry, country) => {
           // if the country dialCode exists WITH area code
@@ -637,10 +566,7 @@ class ReactTelephoneInput extends React.Component {
         (country, index) => {
           const itemClasses = classNames({
             country: true,
-            preferred:
-                        findIndex(self.state.preferredCountries, {
-                          iso2: country.iso2
-                        }) >= 0,
+            preferred: findIndex(self.state.preferredCountries, { iso2: country.iso2 }) >= 0,
             highlight: self.state.highlightCountryIndex === index
           })
 
@@ -655,11 +581,8 @@ class ReactTelephoneInput extends React.Component {
               data-dial-code="1"
               data-country-code={country.iso2}
               onClick={self.handleFlagItemClick.bind(self, country)}
+              leftIcon={<FlagIcon inputFlagClasses={inputFlagClasses} />}
             >
-              <div
-                className={inputFlagClasses}
-                style={self.getFlagStyle()}
-              />
               <span className="country-name">
                 {country.name}
               </span>
@@ -671,7 +594,7 @@ class ReactTelephoneInput extends React.Component {
         }
       );
 
-      const dashedLi = <li key={'dashes'} className="divider" />
+      const dashedLi = <Divider />
       // let's insert a dashed line in between preffered countries and the rest
       countryDropDownList.splice(
         this.state.preferredCountries.length,
@@ -684,16 +607,85 @@ class ReactTelephoneInput extends React.Component {
         hide: !this.state.showDropDown
       })
       return (
-        <ul ref="flagDropdownList" className={dropDownClasses}>
+        <List ref="flagDropdownList" className={dropDownClasses}>
           {countryDropDownList}
-        </ul>
+        </List>
       )
     }
-    getFlagStyle() {
-      return {
-        width: 16,
-        height: 11,
-        backgroundImage: `url(${this.props.flagsImagePath})`
+    formatNumber(text, pattern) {
+      if (!text || text.length === 0) {
+        return '+'
+      }
+      // for all strings with length less than 3, just return it (1, 2 etc.)
+      // also return the same text if the selected country has no fixed format
+      if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
+        return `+${text}`
+      }
+
+      const formattedObject = reduce(
+        pattern,
+        (acc, character) => {
+          if (acc.remainingText.length === 0) {
+            return acc
+          }
+
+          if (character !== '.') {
+            return {
+              formattedText: acc.formattedText + character,
+              remainingText: acc.remainingText
+            }
+          }
+
+          return {
+            formattedText: acc.formattedText + first(acc.remainingText),
+            remainingText: tail(acc.remainingText)
+          }
+        },
+        { formattedText: '', remainingText: text.split('') }
+      );
+      return (
+        formattedObject.formattedText +
+              formattedObject.remainingText.join('')
+      )
+    }
+    scrollTo(country, middle) {
+      if (!country) {
+        return
+      }
+
+      const container = ReactDOM.findDOMNode(this.refs.flagDropdownList);
+
+      if (!container) {
+        return
+      }
+
+      const containerHeight = container.offsetHeight;
+      const containerOffset = container.getBoundingClientRect();
+      const containerTop = containerOffset.top + document.body.scrollTop;
+      const containerBottom = containerTop + containerHeight;
+
+      const element = country;
+      const elementOffset = element.getBoundingClientRect();
+
+      const elementHeight = element.offsetHeight;
+      const elementTop = elementOffset.top + document.body.scrollTop;
+      const elementBottom = elementTop + elementHeight;
+      let newScrollTop = elementTop - containerTop + container.scrollTop;
+      const middleOffset = containerHeight / 2 - elementHeight / 2;
+
+      if (elementTop < containerTop) {
+        // scroll up
+        if (middle) {
+          newScrollTop -= middleOffset
+        }
+        container.scrollTop = newScrollTop
+      } else if (elementBottom > containerBottom) {
+        // scroll down
+        if (middle) {
+          newScrollTop += middleOffset
+        }
+        const heightDifference = containerHeight - elementHeight;
+        container.scrollTop = newScrollTop - heightDifference
       }
     }
     handleInputBlur = () => {
@@ -736,9 +728,27 @@ class ReactTelephoneInput extends React.Component {
             this.props.className
           )}
         >
+        <div
+          ref={(input) => { this.flagDropDownButton = input; }}
+          className={flagViewClasses}
+          onKeyDown={this.handleKeydown}
+          role="menu"
+        >
+          <div
+            ref="selectedFlag"
+            onClick={this.handleFlagDropdownClick}
+            className="selected-flag"
+            title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
+            role="menuitem"
+          >
+            <FlagIcon inputFlagClasses={inputFlagClasses} />
+            <div className={arrowClasses} />
+          </div>
+          {showDropDown ? this.getCountryDropDownList() : ''}
+        </div>
           <TextField
             onChange={this.handleInput}
-            onClick={this.handleInputClick}
+            onTouchTap={this.handleInputClick}
             onFocus={this.handleInputFocus}
             onBlur={this.handleInputBlur}
             onKeyDown={this.handleInputKeyDown}
@@ -753,30 +763,7 @@ class ReactTelephoneInput extends React.Component {
             disabled={disabled}
             id={id}
           />
-          <div
-            ref={(input) => { this.flagDropDownButton = input; }}
-            className={flagViewClasses}
-            onKeyDown={this.handleKeydown}
-            role="menu"
-          >
-            <div
-              ref="selectedFlag"
-              onClick={this.handleFlagDropdownClick}
-              className="selected-flag"
-              title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
-              role="menuitem"
-            >
-              <div
-                className={inputFlagClasses}
-                style={this.getFlagStyle()}
-              >
-                <div className={arrowClasses} />
-              </div>
-            </div>
-            <List>
-              {showDropDown ? this.getCountryDropDownList() : ''}
-            </List>
-          </div>
+
         </div>
       )
     }

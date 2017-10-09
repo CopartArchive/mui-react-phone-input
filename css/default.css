@@ -1,6 +1,6 @@
 .react-tel-input {
-  position: relative;
-  width: 200px;
+  display: flex;
+  width: 250px;
 }
 .react-tel-input .ad {
   background-position: -16px 0;
@@ -727,13 +727,6 @@
   background-color: #FAF0F0;
 }
 .react-tel-input .flag-dropdown {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  padding: 0;
-  background-color: #eaeaea;
-  border: 1px solid #cacaca;
-  border-radius: 3px 0 0 3px;
 }
 .react-tel-input .flag-dropdown.open-dropdown {
   background: #fff;
