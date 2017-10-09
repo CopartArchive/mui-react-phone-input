@@ -296,7 +296,7 @@ class ReactTelephoneInput extends React.Component {
         hide: !this.state.showDropDown
       })
       return (
-        <List ref="flagDropdownList" className={dropDownClasses}>
+        <List ref={elem => this.flagDropdownList = elem} className={dropDownClasses}>
           {countryDropDownList}
         </List>
       )
