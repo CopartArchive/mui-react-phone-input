@@ -55,11 +55,22 @@ const getFlagStyle = (flagsImagePath = 'images/flags.png') => ({
 })
 const FlagIcon = ({ inputFlagClasses }) =>
 (<div className={inputFlagClasses} style={getFlagStyle()} />)
+
 function isNumberValid(inputNumber) {
   const countries = countryData.allCountries;
   return some(countries, country => startsWith(inputNumber, country.dialCode) ||
     startsWith(country.dialCode, inputNumber))
 }
+
+const CountryText = ({ name, dialCode }) => (
+  <span>
+    <span className="country-name">
+      {name}
+    </span>
+    <span className="dial-code">
+      {dialCode}
+    </span>
+  </span>)
 const propTypes = {
   value: PropTypes.string,
   initialValue: PropTypes.string,
@@ -148,316 +159,12 @@ class ReactTelephoneInput extends React.Component {
     return this.getNumber()
   }
 
-  // memoize results based on the first 5/6 characters. That is all that matters
-  guessSelectedCountry(inputNumber) {
-    const secondBestGuess =
-            find(allCountries, { iso2: this.props.defaultCountry }) ||
-            this.props.onlyCountries[0];
-    const inputNumberForCountries = inputNumber.substr(0, 4);
-    let bestGuess
-    if (trim(inputNumber) !== '') {
-      bestGuess = reduce(
-        this.props.onlyCountries,
-        (selectedCountry, country) => {
-          // if the country dialCode exists WITH area code
 
-          if (
-            allCountryCodes[inputNumberForCountries] &&
-                        allCountryCodes[inputNumberForCountries][0] ===
-                            country.iso2
-          ) {
-            return country
-
-            // if the selected country dialCode is there with the area code
-          } else if (
-            allCountryCodes[inputNumberForCountries] &&
-                        allCountryCodes[inputNumberForCountries][0] ===
-                            selectedCountry.iso2
-          ) {
-            return selectedCountry
-
-            // else do the original if statement
-          } else if (startsWith(inputNumber, country.dialCode)) {
-            if (
-              country.dialCode.length >
-                                selectedCountry.dialCode.length
-            ) {
-              return country
-            }
-            if (
-              country.dialCode.length ===
-                                    selectedCountry.dialCode.length &&
-                                country.priority < selectedCountry.priority
-            ) {
-              return country
-            }
-          }
-          return selectedCountry
-        },
-        { dialCode: '', priority: 10001 },
-        this
-      )
-    } else {
-      return secondBestGuess
-    }
-
-    if (!bestGuess.name) {
-      return secondBestGuess
-    }
-
-    return bestGuess
-  }
   getElement(index) {
     return ReactDOM.findDOMNode(this.refs[`flag_no_${index}`])
   }
-    handleFlagDropdownClick =(e) => {
-      if (this.props.disabled) {
-        return
-      }
 
-      e.preventDefault()
-      /* need to put the highlight on the current selected country
-      if the dropdown is going to open up */
-      this.setState(
-        {
-          showDropDown: !this.state.showDropDown,
-          highlightCountry: find(
-            this.props.onlyCountries,
-            this.state.selectedCountry
-          ),
-          highlightCountryIndex: findIndex(
-            this.state.preferredCountries.concat(
-              this.props.onlyCountries
-            ),
-            this.state.selectedCountry
-          )
-        },
-        () => {
-          // only need to scrool if the dropdown list is alive
-          if (this.state.showDropDown) {
-            this.scrollTo(
-              this.getElement(
-                this.state.highlightCountryIndex +
-                                this.state.preferredCountries.length
-              )
-            )
-          }
-        }
-      )
-    }
-    handleInput = (event) => {
-      let formattedNumber = '+';
-      let newSelectedCountry = this.state.selectedCountry;
-      let freezeSelection = this.state.freezeSelection;
 
-      // if the input is the same as before, must be some special key like enter etc.
-      if (event.target.value === this.state.formattedNumber) {
-        return
-      }
-
-      // ie hack
-      if (event.preventDefault) {
-        event.preventDefault()
-      } else {
-        event.returnValue = false
-      }
-
-      if (event.target.value.length > 0) {
-        // before entering the number in new format, lets check if the dial code now matches some other country
-        const inputNumber = event.target.value.replace(/\D/g, '');
-
-        // we don't need to send the whole number to guess the country... only the first 6 characters are enough
-        // the guess country function can then use memoization much more effectively since the set of input it gets has drastically reduced
-        if (
-          !this.state.freezeSelection ||
-                this.state.selectedCountry.dialCode.length > inputNumber.length
-        ) {
-          newSelectedCountry = this.guessSelectedCountry(
-            inputNumber.substring(0, 6)
-          )
-          freezeSelection = false
-        }
-        // let us remove all non numerals from the input
-        formattedNumber = this.formatNumber(
-          inputNumber,
-          newSelectedCountry.format
-        )
-      }
-
-      let caretPosition = event.target.selectionStart;
-      const oldFormattedText = this.state.formattedNumber;
-      const diff = formattedNumber.length - oldFormattedText.length;
-
-      this.setState(
-        {
-          formattedNumber,
-          freezeSelection,
-          selectedCountry:
-                    newSelectedCountry.dialCode.length > 0
-                      ? newSelectedCountry
-                      : this.state.selectedCountry
-        },
-        () => {
-          if (isModernBrowser) {
-            if (caretPosition === 1 && formattedNumber.length === 2) {
-              caretPosition++
-            }
-
-            if (diff > 0) {
-              caretPosition -= diff
-            }
-
-            if (
-              caretPosition > 0 &&
-                        oldFormattedText.length >= formattedNumber.length
-            ) {
-              this.numberInput.setSelectionRange(
-                caretPosition,
-                caretPosition
-              )
-            }
-          }
-
-          if (this.props.onChange) {
-            this.props.onChange(
-              this.state.formattedNumber,
-              this.state.selectedCountry
-            )
-          }
-        }
-      )
-    }
-    handleInputClick = () => {
-      this.setState({ showDropDown: false })
-    }
-    handleFlagItemClick(country) {
-      const { selectedCountry: currentSelectedCountry } = this.state;
-      const nextSelectedCountry = find(this.props.onlyCountries, country);
-
-      // tiny optimization
-      if (currentSelectedCountry.iso2 !== nextSelectedCountry.iso2) {
-        const dialCodeRegex = RegExp(
-          `^(\\+${currentSelectedCountry.dialCode})|\\+`
-        );
-        const newNumber = this.state.formattedNumber.replace(
-          dialCodeRegex,
-          `+${nextSelectedCountry.dialCode}`
-        );
-        const formattedNumber = this.formatNumber(
-          newNumber.replace(/\D/g, ''),
-          nextSelectedCountry.format
-        );
-
-        this.setState(
-          {
-            showDropDown: false,
-            selectedCountry: nextSelectedCountry,
-            freezeSelection: true,
-            formattedNumber
-          },
-          function () {
-            this._cursorToEnd()
-            if (this.props.onChange) {
-              this.props.onChange(
-                formattedNumber,
-                nextSelectedCountry
-              )
-            }
-          }
-        )
-      } else {
-        this.setState({ showDropDown: false })
-      }
-    }
-    handleInputFocus =() => {
-      const { onFocus } = this.props
-      const { formattedNumber, selectedCountry } = this.state
-      // trigger parent component's onFocus handler
-      if (typeof onFocus === 'function') {
-        onFocus(
-          formattedNumber,
-          selectedCountry
-        )
-      }
-
-      this._fillDialCode()
-    }
-    _mapPropsToState(props, firstCall = false) {
-      let inputNumber
-
-      if (props.value) {
-        inputNumber = props.value
-      } else if (props.initialValue && firstCall) {
-        inputNumber = props.initialValue
-      } else if (this.props.value) {
-        // just cleared the value
-        inputNumber = ''
-      } else if (
-        this.state &&
-            this.state.formattedNumber &&
-            this.state.formattedNumber.length > 0
-      ) {
-        inputNumber = this.state.formattedNumber
-      } else {
-        inputNumber = ''
-      }
-
-      const selectedCountryGuess = this.guessSelectedCountry(
-        inputNumber.replace(/\D/g, '')
-      )
-      const selectedCountryGuessIndex = findIndex(
-        allCountries,
-        selectedCountryGuess
-      )
-      const formattedNumber = this.formatNumber(
-        inputNumber.replace(/\D/g, ''),
-        selectedCountryGuess ? selectedCountryGuess.format : null
-      )
-
-      return {
-        selectedCountry: selectedCountryGuess,
-        highlightCountryIndex: selectedCountryGuessIndex,
-        formattedNumber
-      }
-    }
-    _fillDialCode() {
-      // if the input is blank, insert dial code of the selected country
-      if (this.numberInput.value === '+') {
-        this.setState({
-          formattedNumber: `+${this.state.selectedCountry.dialCode}`
-        })
-      }
-    }
-    _getHighlightCountryIndex(direction) {
-      // had to write own function because underscore does not have findIndex. lodash has it
-      const highlightCountryIndex = this.state.highlightCountryIndex + direction;
-
-      if (
-        highlightCountryIndex < 0 ||
-            highlightCountryIndex >=
-                this.props.onlyCountries.length +
-                    this.state.preferredCountries.length
-      ) {
-        return highlightCountryIndex - direction
-      }
-
-      return highlightCountryIndex
-    }
-    _searchCountry= memoize((queryString) => {
-      if (!queryString || queryString.length === 0) {
-        return null
-      }
-      // don't include the preferred countries in search
-      const probableCountries = filter(
-        this.props.onlyCountries,
-        country => startsWith(
-          country.name.toLowerCase(),
-          queryString.toLowerCase()
-        ),
-        this
-      );
-      return probableCountries[0]
-    })
     searchCountry() {
       const probableCandidate =
             this._searchCountry(this.state.queryString) ||
@@ -570,15 +277,8 @@ class ReactTelephoneInput extends React.Component {
               data-country-code={country.iso2}
               onClick={self.handleFlagItemClick.bind(self, country)}
               leftIcon={<FlagIcon inputFlagClasses={inputFlagClasses} />}
-              primaryText={<span><span className="country-name">
-                {country.name}
-              </span>
-              <span className="dial-code">
-                {`+${country.dialCode}`}
-              </span></span>}
-            >
-
-            </ListItem>
+              primaryText={<CountryText name={country.name} dialCode={country.dialCode} />}
+            />
           )
         }
       );
@@ -600,6 +300,66 @@ class ReactTelephoneInput extends React.Component {
           {countryDropDownList}
         </List>
       )
+    }
+
+    // memoize results based on the first 5/6 characters. That is all that matters
+    guessSelectedCountry(inputNumber) {
+      const secondBestGuess =
+              find(allCountries, { iso2: this.props.defaultCountry }) ||
+              this.props.onlyCountries[0];
+      const inputNumberForCountries = inputNumber.substr(0, 4);
+      let bestGuess
+      if (trim(inputNumber) !== '') {
+        bestGuess = reduce(
+          this.props.onlyCountries,
+          (selectedCountry, country) => {
+            // if the country dialCode exists WITH area code
+
+            if (
+              allCountryCodes[inputNumberForCountries] &&
+                          allCountryCodes[inputNumberForCountries][0] ===
+                              country.iso2
+            ) {
+              return country
+
+              // if the selected country dialCode is there with the area code
+            } else if (
+              allCountryCodes[inputNumberForCountries] &&
+                          allCountryCodes[inputNumberForCountries][0] ===
+                              selectedCountry.iso2
+            ) {
+              return selectedCountry
+
+              // else do the original if statement
+            } else if (startsWith(inputNumber, country.dialCode)) {
+              if (
+                country.dialCode.length >
+                                  selectedCountry.dialCode.length
+              ) {
+                return country
+              }
+              if (
+                country.dialCode.length ===
+                                      selectedCountry.dialCode.length &&
+                                  country.priority < selectedCountry.priority
+              ) {
+                return country
+              }
+            }
+            return selectedCountry
+          },
+          { dialCode: '', priority: 10001 },
+          this
+        )
+      } else {
+        return secondBestGuess
+      }
+
+      if (!bestGuess.name) {
+        return secondBestGuess
+      }
+
+      return bestGuess
     }
     // put the cursor to the end of the input (usually after a focus event)
     _cursorToEnd(skipFocus) {
@@ -691,6 +451,179 @@ class ReactTelephoneInput extends React.Component {
         container.scrollTop = newScrollTop - heightDifference
       }
     }
+
+    handleInputClick = () => {
+      this.setState({ showDropDown: false })
+    }
+    handleFlagItemClick(country) {
+      const { selectedCountry: currentSelectedCountry } = this.state;
+      const nextSelectedCountry = find(this.props.onlyCountries, country);
+
+      // tiny optimization
+      if (currentSelectedCountry.iso2 !== nextSelectedCountry.iso2) {
+        const dialCodeRegex = RegExp(
+          `^(\\+${currentSelectedCountry.dialCode})|\\+`
+        );
+        const newNumber = this.state.formattedNumber.replace(
+          dialCodeRegex,
+          `+${nextSelectedCountry.dialCode}`
+        );
+        const formattedNumber = this.formatNumber(
+          newNumber.replace(/\D/g, ''),
+          nextSelectedCountry.format
+        );
+
+        this.setState(
+          {
+            showDropDown: false,
+            selectedCountry: nextSelectedCountry,
+            freezeSelection: true,
+            formattedNumber
+          },
+          function () {
+            this._cursorToEnd()
+            if (this.props.onChange) {
+              this.props.onChange(
+                formattedNumber,
+                nextSelectedCountry
+              )
+            }
+          }
+        )
+      } else {
+        this.setState({ showDropDown: false })
+      }
+    }
+    handleInputFocus =() => {
+      const { onFocus } = this.props
+      const { formattedNumber, selectedCountry } = this.state
+      // trigger parent component's onFocus handler
+      if (typeof onFocus === 'function') {
+        onFocus(
+          formattedNumber,
+          selectedCountry
+        )
+      }
+
+      this._fillDialCode()
+    }
+    handleInput = (event) => {
+      let formattedNumber = '+';
+      let newSelectedCountry = this.state.selectedCountry;
+      let freezeSelection = this.state.freezeSelection;
+
+      // if the input is the same as before, must be some special key like enter etc.
+      if (event.target.value === this.state.formattedNumber) {
+        return
+      }
+
+      // ie hack
+      if (event.preventDefault) {
+        event.preventDefault()
+      } else {
+        event.returnValue = false
+      }
+
+      if (event.target.value.length > 0) {
+        // before entering the number in new format, lets check if the dial code now matches some other country
+        const inputNumber = event.target.value.replace(/\D/g, '');
+
+        // we don't need to send the whole number to guess the country... only the first 6 characters are enough
+        // the guess country function can then use memoization much more effectively since the set of input it gets has drastically reduced
+        if (
+          !this.state.freezeSelection ||
+                this.state.selectedCountry.dialCode.length > inputNumber.length
+        ) {
+          newSelectedCountry = this.guessSelectedCountry(
+            inputNumber.substring(0, 6)
+          )
+          freezeSelection = false
+        }
+        // let us remove all non numerals from the input
+        formattedNumber = this.formatNumber(
+          inputNumber,
+          newSelectedCountry.format
+        )
+      }
+
+      let caretPosition = event.target.selectionStart;
+      const oldFormattedText = this.state.formattedNumber;
+      const diff = formattedNumber.length - oldFormattedText.length;
+
+      this.setState(
+        {
+          formattedNumber,
+          freezeSelection,
+          selectedCountry:
+                    newSelectedCountry.dialCode.length > 0
+                      ? newSelectedCountry
+                      : this.state.selectedCountry
+        },
+        () => {
+          if (isModernBrowser) {
+            if (caretPosition === 1 && formattedNumber.length === 2) {
+              caretPosition++
+            }
+
+            if (diff > 0) {
+              caretPosition -= diff
+            }
+
+            if (
+              caretPosition > 0 &&
+                        oldFormattedText.length >= formattedNumber.length
+            ) {
+              this.numberInput.setSelectionRange(
+                caretPosition,
+                caretPosition
+              )
+            }
+          }
+
+          if (this.props.onChange) {
+            this.props.onChange(
+              this.state.formattedNumber,
+              this.state.selectedCountry
+            )
+          }
+        }
+      )
+    }
+    handleFlagDropdownClick =(e) => {
+        if (this.props.disabled) {
+          return
+        }
+
+        e.preventDefault()
+        /* need to put the highlight on the current selected country
+        if the dropdown is going to open up */
+        this.setState(
+          {
+            showDropDown: !this.state.showDropDown,
+            highlightCountry: find(
+              this.props.onlyCountries,
+              this.state.selectedCountry
+            ),
+            highlightCountryIndex: findIndex(
+              this.state.preferredCountries.concat(
+                this.props.onlyCountries
+              ),
+              this.state.selectedCountry
+            )
+          },
+          () => {
+            // only need to scrool if the dropdown list is alive
+            if (this.state.showDropDown) {
+              this.scrollTo(
+                this.getElement(
+                  this.state.highlightCountryIndex +
+                                  this.state.preferredCountries.length
+                )
+              )
+            }
+          }
+        )
+      }
     handleInputBlur = () => {
       if (typeof this.props.onBlur === 'function') {
         this.props.onBlur(
@@ -699,6 +632,85 @@ class ReactTelephoneInput extends React.Component {
         )
       }
     }
+
+    _mapPropsToState(props, firstCall = false) {
+      let inputNumber
+
+      if (props.value) {
+        inputNumber = props.value
+      } else if (props.initialValue && firstCall) {
+        inputNumber = props.initialValue
+      } else if (this.props.value) {
+        // just cleared the value
+        inputNumber = ''
+      } else if (
+        this.state &&
+            this.state.formattedNumber &&
+            this.state.formattedNumber.length > 0
+      ) {
+        inputNumber = this.state.formattedNumber
+      } else {
+        inputNumber = ''
+      }
+
+      const selectedCountryGuess = this.guessSelectedCountry(
+        inputNumber.replace(/\D/g, '')
+      )
+      const selectedCountryGuessIndex = findIndex(
+        allCountries,
+        selectedCountryGuess
+      )
+      const formattedNumber = this.formatNumber(
+        inputNumber.replace(/\D/g, ''),
+        selectedCountryGuess ? selectedCountryGuess.format : null
+      )
+
+      return {
+        selectedCountry: selectedCountryGuess,
+        highlightCountryIndex: selectedCountryGuessIndex,
+        formattedNumber
+      }
+    }
+    _fillDialCode() {
+      // if the input is blank, insert dial code of the selected country
+      if (this.numberInput.value === '+') {
+        this.setState({
+          formattedNumber: `+${this.state.selectedCountry.dialCode}`
+        })
+      }
+    }
+
+    _getHighlightCountryIndex(direction) {
+      // had to write own function because underscore does not have findIndex. lodash has it
+      const highlightCountryIndex = this.state.highlightCountryIndex + direction;
+
+      if (
+        highlightCountryIndex < 0 ||
+            highlightCountryIndex >=
+                this.props.onlyCountries.length +
+                    this.state.preferredCountries.length
+      ) {
+        return highlightCountryIndex - direction
+      }
+
+      return highlightCountryIndex
+    }
+
+    _searchCountry= memoize((queryString) => {
+      if (!queryString || queryString.length === 0) {
+        return null
+      }
+      // don't include the preferred countries in search
+      const probableCountries = filter(
+        this.props.onlyCountries,
+        country => startsWith(
+          country.name.toLowerCase(),
+          queryString.toLowerCase()
+        ),
+        this
+      );
+      return probableCountries[0]
+    })
     render() {
       const { inputId: id,
         isValid,
