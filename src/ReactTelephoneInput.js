@@ -287,7 +287,7 @@ class ReactTelephoneInput extends React.Component{
     getElement(index) {
         return ReactDOM.findDOMNode(this.refs[`flag_no_${index}`])
     }
-    handleFlagDropdownClick(e) {
+    handleFlagDropdownClick =(e) => {
         if (this.props.disabled) {
             return
         }
@@ -407,7 +407,7 @@ class ReactTelephoneInput extends React.Component{
         this.setState({ showDropDown: false })
     }
     handleFlagItemClick(country) {
-        const currentSelectedCountry = this.state.selectedCountry;
+        const { selectedCountry: currentSelectedCountry} = this.state;
         const nextSelectedCountry = find(this.props.onlyCountries, country);
 
         // tiny optimization
