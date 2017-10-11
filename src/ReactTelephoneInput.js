@@ -58,7 +58,7 @@ const getFlagStyle = (flagsImagePath = 'images/flags.png') => ({
 const FlagIcon = ({ inputFlagClasses }) =>
   (<div className={inputFlagClasses} style={getFlagStyle()} />)
 
-function isNumberValid(inputNumber) {
+const isNumberValid = (inputNumber) => {
   const countries = countryData.allCountries;
   return some(countries, country => startsWith(inputNumber, country.dialCode) ||
     startsWith(country.dialCode, inputNumber))
@@ -89,7 +89,9 @@ const propTypes = {
   onFocus: PropTypes.func,
   disabled: PropTypes.bool,
   pattern: PropTypes.string,
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  autoComplete: PropTypes.bool,
+  isValid: PropTypes.func,
 }
 const defaultProps = {
   autoFormat: true,
@@ -101,7 +103,7 @@ const defaultProps = {
   preferredCountries: [],
   disabled: false,
   placeholder: '+1 (702) 123-4567',
-  autoComplete: 'tel',
+  autoComplete: false,
   required: false,
   inputId: 'telephone-input',
 }
@@ -242,31 +244,27 @@ class ReactTelephoneInput extends React.Component {
 
           if (
             allCountryCodes[inputNumberForCountries] &&
-                          allCountryCodes[inputNumberForCountries][0] ===
-                              country.iso2
+            allCountryCodes[inputNumberForCountries][0] === country.iso2
           ) {
             return country
 
             // if the selected country dialCode is there with the area code
           } else if (
             allCountryCodes[inputNumberForCountries] &&
-                          allCountryCodes[inputNumberForCountries][0] ===
-                              selectedCountry.iso2
+            allCountryCodes[inputNumberForCountries][0] === selectedCountry.iso2
           ) {
             return selectedCountry
 
             // else do the original if statement
           } else if (startsWith(inputNumber, country.dialCode)) {
             if (
-              country.dialCode.length >
-                                  selectedCountry.dialCode.length
+              country.dialCode.length > selectedCountry.dialCode.length
             ) {
               return country
             }
             if (
-              country.dialCode.length ===
-                                      selectedCountry.dialCode.length &&
-                                  country.priority < selectedCountry.priority
+              country.dialCode.length === selectedCountry.dialCode.length &&
+              country.priority < selectedCountry.priority
             ) {
               return country
             }
@@ -359,7 +357,7 @@ class ReactTelephoneInput extends React.Component {
     const elementTop = elementOffset.top + document.body.scrollTop;
     const elementBottom = elementTop + elementHeight;
     let newScrollTop = elementTop - containerTop + container.scrollTop;
-    const middleOffset = containerHeight / 2 - elementHeight / 2;
+    const middleOffset = (containerHeight / 2) - (elementHeight / 2);
 
     if (elementTop < containerTop) {
       // scroll up
