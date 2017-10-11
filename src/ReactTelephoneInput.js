@@ -56,7 +56,7 @@ const getFlagStyle = (flagsImagePath = 'images/flags.png') => ({
   backgroundImage: `url(${flagsImagePath})`
 })
 const FlagIcon = ({ inputFlagClasses }) =>
-(<div className={inputFlagClasses} style={getFlagStyle()} />)
+  (<div className={inputFlagClasses} style={getFlagStyle()} />)
 
 function isNumberValid(inputNumber) {
   const countries = countryData.allCountries;
@@ -166,20 +166,20 @@ class ReactTelephoneInput extends React.Component {
   }
 
 
-    searchCountry() {
-      const probableCandidate =
+  searchCountry() {
+    const probableCandidate =
             this._searchCountry(this.state.queryString) ||
             this.props.onlyCountries[0]
-      const probableCandidateIndex =
+    const probableCandidateIndex =
             findIndex(this.props.onlyCountries, probableCandidate) +
             this.state.preferredCountries.length
-      this.scrollTo(this.getElement(probableCandidateIndex), true)
+    this.scrollTo(this.getElement(probableCandidateIndex), true)
 
-      this.setState({
-        queryString: '',
-        highlightCountryIndex: probableCandidateIndex
-      })
-    }
+    this.setState({
+      queryString: '',
+      highlightCountryIndex: probableCandidateIndex
+    })
+  }
     handleKeydown =(event) => {
       if (!this.state.showDropDown) {
         return
@@ -591,40 +591,40 @@ class ReactTelephoneInput extends React.Component {
       )
     }
     handleFlagDropdownClick =(e) => {
-        if (this.props.disabled) {
-          return
-        }
-
-        e.preventDefault()
-        /* need to put the highlight on the current selected country
-        if the dropdown is going to open up */
-        this.setState(
-          {
-            showDropDown: !this.state.showDropDown,
-            highlightCountry: find(
-              this.props.onlyCountries,
-              this.state.selectedCountry
-            ),
-            highlightCountryIndex: findIndex(
-              this.state.preferredCountries.concat(
-                this.props.onlyCountries
-              ),
-              this.state.selectedCountry
-            )
-          },
-          () => {
-            // only need to scrool if the dropdown list is alive
-            if (this.state.showDropDown) {
-              this.scrollTo(
-                this.getElement(
-                  this.state.highlightCountryIndex +
-                                  this.state.preferredCountries.length
-                )
-              )
-            }
-          }
-        )
+      if (this.props.disabled) {
+        return
       }
+
+      e.preventDefault()
+      /* need to put the highlight on the current selected country
+        if the dropdown is going to open up */
+      this.setState(
+        {
+          showDropDown: !this.state.showDropDown,
+          highlightCountry: find(
+            this.props.onlyCountries,
+            this.state.selectedCountry
+          ),
+          highlightCountryIndex: findIndex(
+            this.state.preferredCountries.concat(
+              this.props.onlyCountries
+            ),
+            this.state.selectedCountry
+          )
+        },
+        () => {
+          // only need to scrool if the dropdown list is alive
+          if (this.state.showDropDown) {
+            this.scrollTo(
+              this.getElement(
+                this.state.highlightCountryIndex +
+                                  this.state.preferredCountries.length
+              )
+            )
+          }
+        }
+      )
+    }
     handleInputBlur = () => {
       if (typeof this.props.onBlur === 'function') {
         this.props.onBlur(
@@ -748,7 +748,7 @@ class ReactTelephoneInput extends React.Component {
             ref={(input) => { this.flagDropDownButton = input; }}
             className={flagViewClasses}
             onKeyDown={this.handleKeydown}
-            >
+          >
             <div
               ref="selectedFlag"
               onTouchTap={this.handleFlagDropdownClick}
@@ -759,8 +759,8 @@ class ReactTelephoneInput extends React.Component {
               <FlagIcon inputFlagClasses={inputFlagClasses} />
               <div className={arrowClasses} />
             </div>
-          {showDropDown ? this.getCountryDropDownList() : ''}
-        </div>
+            {showDropDown ? this.getCountryDropDownList() : ''}
+          </div>
           <TextField
             onChange={this.handleInput}
             onTouchTap={this.handleInputClick}
