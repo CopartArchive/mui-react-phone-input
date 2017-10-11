@@ -17,8 +17,7 @@
     "lint": "eslint src",
     "test": "jest",
     "test: coverage": "jest --coverage",
-    "test:watch": "jest --watch",
-    "postinstall": "npm run build"
+    "test:watch": "jest --watch"
   },
   "jest": {
     "transform": {
