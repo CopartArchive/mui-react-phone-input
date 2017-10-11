@@ -12,12 +12,13 @@
   ],
   "scripts": {
     "build": "npx nwb build-react-component",
-    "clean": "npx nwb clean-module && npx clean-demo",
-    "start": "nwb serve-react-demo",
+    "clean": "npx nwb clean-module && npx nwb clean-demo",
+    "start": "npx nwb serve-react-demo",
     "lint": "eslint src",
     "test": "jest",
     "test: coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "postinstall": "npm run build"
   },
   "jest": {
     "transform": {
@@ -41,18 +42,23 @@
   },
   "homepage": "https://github.com/mukeshsoni/react-telephone-input",
   "devDependencies": {
+    "babel-eslint": "^8.0.1",
     "babel-jest": "20.0.3",
     "babel-preset-latest": "6.24.1",
     "babel-preset-react": "6.24.1",
     "chai": "^3.0.0",
     "dirty-chai": "^1.2.2",
     "enzyme": "^2.7.1",
-    "eslint": "0.23.0",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0",
     "jest": "20.0.4",
+    "npx": "^9.6.0",
     "nwb": "0.18.x",
-    "react": "^15.x",
+    "nwb-less": "^0.6.0",
     "react-addons-test-utils": "15.6.0",
-    "react-dom": "^15.3.2",
     "react-test-renderer": "15.6.1",
     "regenerator-runtime": "0.10.5"
   },
@@ -61,8 +67,12 @@
     "country-telephone-data": "0.4.2",
     "create-react-class": "^15.6.0",
     "lodash": "4.17.4",
+    "material-ui": "0.15.4",
     "prop-types": "^15.5.10",
-    "react-onclickoutside": "^6.5.0"
+    "react": "^15.x",
+    "react-dom": "^15.3.2",
+    "react-onclickoutside": "^6.5.0",
+    "react-tap-event-plugin": "1.0.0"
   },
   "peerDependencies": {
     "react": ">=0.14.0 || ^15.0.0"
