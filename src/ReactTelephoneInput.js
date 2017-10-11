@@ -58,6 +58,12 @@ const getFlagStyle = (flagsImagePath = 'images/flags.png') => ({
 const FlagIcon = ({ inputFlagClasses }) =>
   (<div className={inputFlagClasses} style={getFlagStyle()} />)
 
+FlagIcon.propTypes = {
+  inputFlagClasses: PropTypes.string,
+}
+FlagIcon.defaultProps = {
+  inputFlagClasses: '',
+}
 const isNumberValid = (inputNumber) => {
   const countries = countryData.allCountries;
   return some(countries, country => startsWith(inputNumber, country.dialCode) ||
@@ -73,6 +79,16 @@ const CountryText = ({ name, dialCode }) => (
       {dialCode}
     </span>
   </span>)
+
+CountryText.propTypes = {
+  name: PropTypes.string,
+  dialCode: PropTypes.string,
+}
+CountryText.defaultProps = {
+  name: '',
+  dialCode: '',
+}
+
 const propTypes = {
   value: PropTypes.string,
   initialValue: PropTypes.string,
