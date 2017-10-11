@@ -124,7 +124,7 @@ const defaultProps = {
   autoComplete: false,
   required: false,
   inputId: 'telephone-input',
-  flagDropDownEnabled: false,
+  flagDropDownEnabled: true,
 }
 class ReactTelephoneInput extends React.Component {
   constructor(props) {
@@ -211,7 +211,7 @@ class ReactTelephoneInput extends React.Component {
       }
     );
 
-    const dashedLi = <Divider />
+    const dashedLi = <Divider key="divider" />
     // let's insert a dashed line in between preffered countries and the rest
     countryDropDownList.splice(
       this.state.preferredCountries.length,
@@ -300,15 +300,15 @@ class ReactTelephoneInput extends React.Component {
   }
   // put the cursor to the end of the input (usually after a focus event)
   _cursorToEnd(skipFocus) {
-    const textFieldInput = this.numberInput;
+    const { input } = this.numberInput;
     if (skipFocus) {
       this._fillDialCode()
     } else {
-      textFieldInput.focus()
+      input.focus()
 
       if (isModernBrowser) {
-        const len = textFieldInput.value && textFieldInput.value.length;
-        textFieldInput.input.setSelectionRange(len, len)
+        const len = input.value.length;
+        input.setSelectionRange(len, len)
       }
     }
   }
