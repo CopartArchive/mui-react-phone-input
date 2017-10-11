@@ -389,7 +389,6 @@ class ReactTelephoneInput extends React.Component {
     }
   }
     handleKeydown =(event) => {
-      console.log('In handle keydown')
       if (!this.state.showDropDown) {
         return
       }
