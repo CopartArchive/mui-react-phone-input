@@ -17,8 +17,8 @@
     "lint": "eslint src",
     "test": "jest",
     "test: coverage": "jest --coverage",
-    "test:watch": "jest --watch",
-    "updatecss": "gulp sass"
+     "test:watch": "jest --watch",
+     "updatecss": "gulp sass"
   },
   "jest": {
     "transform": {
