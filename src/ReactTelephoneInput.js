@@ -127,12 +127,7 @@ class ReactTelephoneInput extends React.Component {
   constructor(props) {
     super(props)
     const preferredCountries = this.props.preferredCountries
-      .map(
-        iso2 =>
-          (iso2Lookup.hasOwnProperty(iso2)
-            ? allCountries[iso2Lookup[iso2]]
-            : null)
-      )
+      .map(iso2 => (iso2Lookup.hasOwnProperty(iso2) ? allCountries[iso2Lookup[iso2]] : null))
       .filter(val => val !== null);
     this.state = assign(
       {},
@@ -494,7 +489,7 @@ class ReactTelephoneInput extends React.Component {
             freezeSelection: true,
             formattedNumber
           },
-          function () {
+          () => {
             this._cursorToEnd()
             if (this.props.onChange) {
               this.props.onChange(
