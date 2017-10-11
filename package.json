@@ -17,7 +17,8 @@
     "lint": "eslint src",
     "test": "jest",
     "test: coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+     "test:watch": "jest --watch",
+     "updatecss": "gulp sass"
   },
   "jest": {
     "transform": {
@@ -53,10 +54,11 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.3.0",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^3.1.0",
     "jest": "20.0.4",
     "npx": "^9.6.0",
-    "nwb": "0.18.x",
-    "nwb-less": "^0.6.0",
+    "nwb": "0.19.x",
     "react-addons-test-utils": "15.6.0",
     "react-test-renderer": "15.6.1",
     "regenerator-runtime": "0.10.5"
@@ -67,6 +69,7 @@
     "create-react-class": "^15.6.0",
     "lodash": "4.17.4",
     "material-ui": "0.15.4",
+    "nwb-sass": "^0.8.1",
     "prop-types": "^15.5.10",
     "react": "^15.x",
     "react-dom": "^15.3.2",
