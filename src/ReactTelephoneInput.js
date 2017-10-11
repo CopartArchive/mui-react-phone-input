@@ -28,7 +28,7 @@ import countryData from 'country-telephone-data';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import '../less/default.less';
+import '../css/default.css';
 
 
 const allCountries = countryData.allCountries;

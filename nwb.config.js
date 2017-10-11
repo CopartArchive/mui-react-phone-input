@@ -3,9 +3,9 @@ const path = require('path')
 module.exports = {
   webpack: {
     rules: {
-      less: {
+      sass: {
         data: '@import "_variables"',
-        includePaths: [path.resolve('src/less')]
+        includePaths: [path.resolve('scss')]
       }
     }
   }
