@@ -166,19 +166,215 @@ class ReactTelephoneInput extends React.Component {
   }
 
 
+  getCountryDropDownList() {
+    const self = this;
+    const countryDropDownList = map(
+      this.state.preferredCountries.concat(this.props.onlyCountries),
+      (country, index) => {
+        const itemClasses = classNames({
+          country: true,
+          preferred: findIndex(self.state.preferredCountries, { iso2: country.iso2 }) >= 0,
+          highlight: self.state.highlightCountryIndex === index
+        })
+
+        const inputFlagClasses = `flag ${country.iso2}`;
+
+        return (
+          <ListItem
+            ref={`flag_no_${index}`}
+            key={`flag_no_${index}`}
+            data-flag-key={`flag_no_${index}`}
+            className={itemClasses}
+            data-dial-code="1"
+            data-country-code={country.iso2}
+            onTouchTap={self.handleFlagItemClick.bind(self, country)}
+            leftIcon={<FlagIcon inputFlagClasses={inputFlagClasses} />}
+            primaryText={<CountryText name={country.name} dialCode={country.dialCode} />}
+          />
+        )
+      }
+    );
+
+    const dashedLi = <Divider />
+    // let's insert a dashed line in between preffered countries and the rest
+    countryDropDownList.splice(
+      this.state.preferredCountries.length,
+      0,
+      dashedLi
+    )
+
+    const dropDownClasses = classNames({
+      'country-list': true,
+      hide: !this.state.showDropDown
+    })
+    return (
+      <List ref={elem => this.flagDropdownList = elem} className={dropDownClasses}>
+        {countryDropDownList}
+      </List>
+    )
+  }
   searchCountry() {
     const probableCandidate =
-            this._searchCountry(this.state.queryString) ||
-            this.props.onlyCountries[0]
+              this._searchCountry(this.state.queryString) ||
+              this.props.onlyCountries[0]
     const probableCandidateIndex =
-            findIndex(this.props.onlyCountries, probableCandidate) +
-            this.state.preferredCountries.length
+              findIndex(this.props.onlyCountries, probableCandidate) +
+              this.state.preferredCountries.length
     this.scrollTo(this.getElement(probableCandidateIndex), true)
 
     this.setState({
       queryString: '',
       highlightCountryIndex: probableCandidateIndex
     })
+  }
+  // memoize results based on the first 5/6 characters. That is all that matters
+  guessSelectedCountry(inputNumber) {
+    const secondBestGuess =
+              find(allCountries, { iso2: this.props.defaultCountry }) ||
+              this.props.onlyCountries[0];
+    const inputNumberForCountries = inputNumber.substr(0, 4);
+    let bestGuess
+    if (trim(inputNumber) !== '') {
+      bestGuess = reduce(
+        this.props.onlyCountries,
+        (selectedCountry, country) => {
+          // if the country dialCode exists WITH area code
+
+          if (
+            allCountryCodes[inputNumberForCountries] &&
+                          allCountryCodes[inputNumberForCountries][0] ===
+                              country.iso2
+          ) {
+            return country
+
+            // if the selected country dialCode is there with the area code
+          } else if (
+            allCountryCodes[inputNumberForCountries] &&
+                          allCountryCodes[inputNumberForCountries][0] ===
+                              selectedCountry.iso2
+          ) {
+            return selectedCountry
+
+            // else do the original if statement
+          } else if (startsWith(inputNumber, country.dialCode)) {
+            if (
+              country.dialCode.length >
+                                  selectedCountry.dialCode.length
+            ) {
+              return country
+            }
+            if (
+              country.dialCode.length ===
+                                      selectedCountry.dialCode.length &&
+                                  country.priority < selectedCountry.priority
+            ) {
+              return country
+            }
+          }
+          return selectedCountry
+        },
+        { dialCode: '', priority: 10001 },
+        this
+      )
+    } else {
+      return secondBestGuess
+    }
+
+    if (!bestGuess.name) {
+      return secondBestGuess
+    }
+
+    return bestGuess
+  }
+  // put the cursor to the end of the input (usually after a focus event)
+  _cursorToEnd(skipFocus) {
+    const input = this.numberInput;
+    if (skipFocus) {
+      this._fillDialCode()
+    } else {
+      input.focus()
+
+      if (isModernBrowser) {
+        const len = input.value && input.value.length;
+        input.setSelectionRange(len, len)
+      }
+    }
+  }
+  formatNumber(text, pattern) {
+    if (!text || text.length === 0) {
+      return '+'
+    }
+    // for all strings with length less than 3, just return it (1, 2 etc.)
+    // also return the same text if the selected country has no fixed format
+    if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
+      return `+${text}`
+    }
+
+    const formattedObject = reduce(
+      pattern,
+      (acc, character) => {
+        if (acc.remainingText.length === 0) {
+          return acc
+        }
+
+        if (character !== '.') {
+          return {
+            formattedText: acc.formattedText + character,
+            remainingText: acc.remainingText
+          }
+        }
+
+        return {
+          formattedText: acc.formattedText + first(acc.remainingText),
+          remainingText: tail(acc.remainingText)
+        }
+      },
+      { formattedText: '', remainingText: text.split('') }
+    );
+    return (
+      formattedObject.formattedText +
+              formattedObject.remainingText.join('')
+    )
+  }
+  scrollTo(country, middle) {
+    if (!country) {
+      return
+    }
+
+    const container = ReactDOM.findDOMNode(this.refs.flagDropdownList);
+
+    if (!container) {
+      return
+    }
+
+    const containerHeight = container.offsetHeight;
+    const containerOffset = container.getBoundingClientRect();
+    const containerTop = containerOffset.top + document.body.scrollTop;
+    const containerBottom = containerTop + containerHeight;
+
+    const element = country;
+    const elementOffset = element.getBoundingClientRect();
+
+    const elementHeight = element.offsetHeight;
+    const elementTop = elementOffset.top + document.body.scrollTop;
+    const elementBottom = elementTop + elementHeight;
+    let newScrollTop = elementTop - containerTop + container.scrollTop;
+    const middleOffset = containerHeight / 2 - elementHeight / 2;
+
+    if (elementTop < containerTop) {
+      // scroll up
+      if (middle) {
+        newScrollTop -= middleOffset
+      }
+      container.scrollTop = newScrollTop
+    } else if (elementBottom > containerBottom) {
+      // scroll down
+      if (middle) {
+        newScrollTop += middleOffset
+      }
+      const heightDifference = containerHeight - elementHeight;
+      container.scrollTop = newScrollTop - heightDifference
+    }
   }
     handleKeydown =(event) => {
       if (!this.state.showDropDown) {
@@ -243,6 +439,7 @@ class ReactTelephoneInput extends React.Component {
           }
       }
     }
+
     handleInputKeyDown(event) {
       if (event.which === keys.ENTER) {
         this.props.onEnterKeyPress(event)
@@ -255,204 +452,6 @@ class ReactTelephoneInput extends React.Component {
         })
       }
     }
-    getCountryDropDownList() {
-      const self = this;
-      const countryDropDownList = map(
-        this.state.preferredCountries.concat(this.props.onlyCountries),
-        (country, index) => {
-          const itemClasses = classNames({
-            country: true,
-            preferred: findIndex(self.state.preferredCountries, { iso2: country.iso2 }) >= 0,
-            highlight: self.state.highlightCountryIndex === index
-          })
-
-          const inputFlagClasses = `flag ${country.iso2}`;
-
-          return (
-            <ListItem
-              ref={`flag_no_${index}`}
-              key={`flag_no_${index}`}
-              data-flag-key={`flag_no_${index}`}
-              className={itemClasses}
-              data-dial-code="1"
-              data-country-code={country.iso2}
-              onTouchTap={self.handleFlagItemClick.bind(self, country)}
-              leftIcon={<FlagIcon inputFlagClasses={inputFlagClasses} />}
-              primaryText={<CountryText name={country.name} dialCode={country.dialCode} />}
-            />
-          )
-        }
-      );
-
-      const dashedLi = <Divider />
-      // let's insert a dashed line in between preffered countries and the rest
-      countryDropDownList.splice(
-        this.state.preferredCountries.length,
-        0,
-        dashedLi
-      )
-
-      const dropDownClasses = classNames({
-        'country-list': true,
-        hide: !this.state.showDropDown
-      })
-      return (
-        <List ref={elem => this.flagDropdownList = elem} className={dropDownClasses}>
-          {countryDropDownList}
-        </List>
-      )
-    }
-
-    // memoize results based on the first 5/6 characters. That is all that matters
-    guessSelectedCountry(inputNumber) {
-      const secondBestGuess =
-              find(allCountries, { iso2: this.props.defaultCountry }) ||
-              this.props.onlyCountries[0];
-      const inputNumberForCountries = inputNumber.substr(0, 4);
-      let bestGuess
-      if (trim(inputNumber) !== '') {
-        bestGuess = reduce(
-          this.props.onlyCountries,
-          (selectedCountry, country) => {
-            // if the country dialCode exists WITH area code
-
-            if (
-              allCountryCodes[inputNumberForCountries] &&
-                          allCountryCodes[inputNumberForCountries][0] ===
-                              country.iso2
-            ) {
-              return country
-
-              // if the selected country dialCode is there with the area code
-            } else if (
-              allCountryCodes[inputNumberForCountries] &&
-                          allCountryCodes[inputNumberForCountries][0] ===
-                              selectedCountry.iso2
-            ) {
-              return selectedCountry
-
-              // else do the original if statement
-            } else if (startsWith(inputNumber, country.dialCode)) {
-              if (
-                country.dialCode.length >
-                                  selectedCountry.dialCode.length
-              ) {
-                return country
-              }
-              if (
-                country.dialCode.length ===
-                                      selectedCountry.dialCode.length &&
-                                  country.priority < selectedCountry.priority
-              ) {
-                return country
-              }
-            }
-            return selectedCountry
-          },
-          { dialCode: '', priority: 10001 },
-          this
-        )
-      } else {
-        return secondBestGuess
-      }
-
-      if (!bestGuess.name) {
-        return secondBestGuess
-      }
-
-      return bestGuess
-    }
-    // put the cursor to the end of the input (usually after a focus event)
-    _cursorToEnd(skipFocus) {
-      const input = this.numberInput;
-      if (skipFocus) {
-        this._fillDialCode()
-      } else {
-        input.focus()
-
-        if (isModernBrowser) {
-          const len = input.value && input.value.length;
-          input.setSelectionRange(len, len)
-        }
-      }
-    }
-    formatNumber(text, pattern) {
-      if (!text || text.length === 0) {
-        return '+'
-      }
-      // for all strings with length less than 3, just return it (1, 2 etc.)
-      // also return the same text if the selected country has no fixed format
-      if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
-        return `+${text}`
-      }
-
-      const formattedObject = reduce(
-        pattern,
-        (acc, character) => {
-          if (acc.remainingText.length === 0) {
-            return acc
-          }
-
-          if (character !== '.') {
-            return {
-              formattedText: acc.formattedText + character,
-              remainingText: acc.remainingText
-            }
-          }
-
-          return {
-            formattedText: acc.formattedText + first(acc.remainingText),
-            remainingText: tail(acc.remainingText)
-          }
-        },
-        { formattedText: '', remainingText: text.split('') }
-      );
-      return (
-        formattedObject.formattedText +
-              formattedObject.remainingText.join('')
-      )
-    }
-    scrollTo(country, middle) {
-      if (!country) {
-        return
-      }
-
-      const container = ReactDOM.findDOMNode(this.refs.flagDropdownList);
-
-      if (!container) {
-        return
-      }
-
-      const containerHeight = container.offsetHeight;
-      const containerOffset = container.getBoundingClientRect();
-      const containerTop = containerOffset.top + document.body.scrollTop;
-      const containerBottom = containerTop + containerHeight;
-
-      const element = country;
-      const elementOffset = element.getBoundingClientRect();
-
-      const elementHeight = element.offsetHeight;
-      const elementTop = elementOffset.top + document.body.scrollTop;
-      const elementBottom = elementTop + elementHeight;
-      let newScrollTop = elementTop - containerTop + container.scrollTop;
-      const middleOffset = containerHeight / 2 - elementHeight / 2;
-
-      if (elementTop < containerTop) {
-        // scroll up
-        if (middle) {
-          newScrollTop -= middleOffset
-        }
-        container.scrollTop = newScrollTop
-      } else if (elementBottom > containerBottom) {
-        // scroll down
-        if (middle) {
-          newScrollTop += middleOffset
-        }
-        const heightDifference = containerHeight - elementHeight;
-        container.scrollTop = newScrollTop - heightDifference
-      }
-    }
-
     handleInputClick = () => {
       this.setState({ showDropDown: false })
     }
