@@ -481,7 +481,6 @@ class ReactTelephoneInput extends React.Component {
           newNumber.replace(/\D/g, ''),
           nextSelectedCountry.format
         );
-
         this.setState(
           {
             showDropDown: false,
@@ -789,6 +788,7 @@ class ReactTelephoneInput extends React.Component {
             hintText={placeholder}
             disabled={disabled}
             id={id}
+            maxLength={selectedCountry.format.length}
           />
 
         </div>
