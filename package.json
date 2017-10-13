@@ -61,23 +61,20 @@
     "nwb": "0.19.x",
     "react-addons-test-utils": "15.6.0",
     "react-test-renderer": "15.6.1",
-    "regenerator-runtime": "0.10.5"
+    "regenerator-runtime": "0.10.5",
+    "nwb-sass": "^0.8.1"
   },
   "dependencies": {
     "classnames": "^2.1.2",
     "country-telephone-data": "0.4.2",
-    "create-react-class": "^15.6.0",
     "lodash": "4.17.4",
-    "material-ui": "0.15.4",
-    "nwb-sass": "^0.8.1",
-    "prop-types": "^15.5.10",
-    "react": "^15.x",
-    "react-dom": "^15.3.2",
-    "react-onclickoutside": "^6.5.0",
-    "react-tap-event-plugin": "1.0.0"
+    "react-onclickoutside": "^6.5.0"
   },
   "peerDependencies": {
-    "react": ">=0.14.0 || ^15.0.0"
+    "react": "^15.4.2",
+    "material-ui": "0.15.4",
+    "react-tap-event-plugin": "1.0.0",
+    "prop-types": "^15.5.10"
   },
   "browserify-shim": {
     "classnames": "global:classNames",
