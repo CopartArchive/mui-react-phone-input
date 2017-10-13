@@ -8,6 +8,7 @@ injectTapEventPlugin();
 const Demo = () => (<div>
   <h1>React Telephone Input Demo</h1>
   <MuiThemeProvider>
+
     <RTI
       defaultCountry="in"
       flagsImagePath="./images/flags.png"

@@ -92,6 +92,8 @@ CountryText.defaultProps = {
 const propTypes = {
   value: PropTypes.string,
   initialValue: PropTypes.string,
+  style: PropTypes.shape(),
+  errorText: PropTypes.string,
   autoFormat: PropTypes.bool,
   defaultCountry: PropTypes.string,
   onlyCountries: PropTypes.arrayOf(PropTypes.object),
@@ -113,6 +115,7 @@ const propTypes = {
 }
 const defaultProps = {
   autoFormat: true,
+  errorText: '',
   onlyCountries: allCountries,
   defaultCountry: allCountries[0].iso2,
   isValid: isNumberValid,
@@ -125,6 +128,7 @@ const defaultProps = {
   required: false,
   inputId: 'telephone-input',
   flagDropDownEnabled: true,
+  onChange: null,
 }
 class ReactTelephoneInput extends React.Component {
   constructor(props) {
@@ -731,6 +735,8 @@ class ReactTelephoneInput extends React.Component {
         pattern,
         disabled,
         flagDropDownEnabled,
+        style,
+        errorText,
         required } = this.props
       const { formattedNumber, showDropDown, selectedCountry } = this.state
       const arrowClasses = classNames({
@@ -788,6 +794,9 @@ class ReactTelephoneInput extends React.Component {
             hintText={placeholder}
             disabled={disabled}
             id={id}
+            style={style}
+            errorText={errorText}
+            title={formattedNumber}
             maxLength={selectedCountry.format.length}
           />
 
