@@ -36,7 +36,6 @@ import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import styles from '../css/default.css';
 
-console.log(styles['react-tel-input']);
 var allCountries = countryData.allCountries;
 var iso2Lookup = countryData.iso2Lookup;
 var allCountryCodes = countryData.allCountryCodes;
@@ -168,7 +167,7 @@ var ReactTelephoneInput = function (_React$Component) {
       if (event.preventDefault) {
         event.preventDefault();
       } else {
-        event.returnValue = false;
+        event.returnValue = false; // eslint-disable-line no-param-reassign
       }
 
       var self = _this;
@@ -369,17 +368,23 @@ var ReactTelephoneInput = function (_React$Component) {
   };
 
   ReactTelephoneInput.prototype.getCountryDropDownList = function getCountryDropDownList() {
-    var _this2 = this;
+    var _classNames3,
+        _this2 = this;
+
+    var countryStyle = styles.country,
+        preferred = styles.preferred,
+        highlight = styles.highlight,
+        flagIconStyle = styles.flag,
+        countryListStyle = styles['country-list'],
+        hideStyle = styles.hide;
 
     var self = this;
     var countryDropDownList = map(this.state.preferredCountries.concat(this.props.onlyCountries), function (country, index) {
-      var itemClasses = classNames({
-        country: true,
-        preferred: findIndex(self.state.preferredCountries, { iso2: country.iso2 }) >= 0,
-        highlight: self.state.highlightCountryIndex === index
-      });
+      var _classNames, _classNames2;
 
-      var inputFlagClasses = 'flag ' + country.iso2;
+      var itemClasses = classNames((_classNames = {}, _classNames['' + countryStyle] = true, _classNames['' + preferred] = findIndex(self.state.preferredCountries, { iso2: country.iso2 }) >= 0, _classNames['' + highlight] = self.state.highlightCountryIndex === index, _classNames));
+      var inputFlagClasses = classNames((_classNames2 = {}, _classNames2['' + flagIconStyle] = true, _classNames2['' + styles[country.iso2]] = true, _classNames2));
+      // const inputFlagClasses = `flag ${country.iso2}`;
 
       return React.createElement(ListItem, {
         ref: 'flag_no_' + index,
@@ -398,10 +403,7 @@ var ReactTelephoneInput = function (_React$Component) {
     // let's insert a dashed line in between preffered countries and the rest
     countryDropDownList.splice(this.state.preferredCountries.length, 0, dashedLi);
 
-    var dropDownClasses = classNames({
-      'country-list': true,
-      hide: !this.state.showDropDown
-    });
+    var dropDownClasses = classNames((_classNames3 = {}, _classNames3['' + countryListStyle] = true, _classNames3['' + hideStyle] = !this.state.showDropDown, _classNames3));
     return React.createElement(
       List,
       { ref: function ref(elem) {
@@ -641,7 +643,12 @@ var ReactTelephoneInput = function (_React$Component) {
   };
 
   ReactTelephoneInput.prototype.render = function render() {
-    var _this4 = this;
+    var _classNames4,
+        _classNames5,
+        _classNames6,
+        _classNames7,
+        _classNames8,
+        _this4 = this;
 
     var _props = this.props,
         id = _props.inputId,
@@ -658,26 +665,26 @@ var ReactTelephoneInput = function (_React$Component) {
         formattedNumber = _state.formattedNumber,
         showDropDown = _state.showDropDown,
         selectedCountry = _state.selectedCountry;
+    var arrowStyle = styles.arrow,
+        upStyle = styles.up,
+        rootStyle = styles['react-tel-input'],
+        formControlStyle = styles['form-control'],
+        flagDropdownStyle = styles['flag-dropdown'],
+        openDropdownStyle = styles['open-dropdown'],
+        flagStyle = styles.flag,
+        invalidNumberStyle = styles['invalid-number'],
+        selectedFlagStyle = styles['selected-flag'];
 
-    var arrowClasses = classNames({
-      arrow: true,
-      up: showDropDown
-    });
-    var inputClasses = classNames({
-      'form-control': true,
-      'invalid-number': !isValid(formattedNumber.replace(/\D/g, ''))
-    });
-
-    var flagViewClasses = classNames({
-      'flag-dropdown': true,
-      'open-dropdown': showDropDown
-    });
-
-    var inputFlagClasses = 'flag ' + selectedCountry.iso2;
+    var selectedCountryFlagStyle = styles[selectedCountry.iso2];
+    var rootClasses = classNames((_classNames4 = {}, _classNames4['' + rootStyle] = true, _classNames4));
+    var arrowClasses = classNames((_classNames5 = {}, _classNames5['' + arrowStyle] = true, _classNames5['' + upStyle] = showDropDown, _classNames5));
+    var inputClasses = classNames((_classNames6 = {}, _classNames6['' + formControlStyle] = true, _classNames6['' + invalidNumberStyle] = !isValid(formattedNumber.replace(/\D/g, '')), _classNames6));
+    var flagViewClasses = classNames((_classNames7 = {}, _classNames7['' + flagDropdownStyle] = true, _classNames7['' + openDropdownStyle] = showDropDown, _classNames7));
+    var inputFlagClasses = classNames((_classNames8 = {}, _classNames8['' + flagStyle] = true, _classNames8['' + selectedCountryFlagStyle] = true, _classNames8));
     return React.createElement(
       'div',
       {
-        className: classNames('react-tel-input', this.props.classNames, this.props.className)
+        className: rootClasses
       },
       React.createElement(
         'div',
@@ -690,9 +697,10 @@ var ReactTelephoneInput = function (_React$Component) {
         },
         React.createElement(
           'div',
-          { ref: 'selectedFlag',
+          {
+            ref: 'selectedFlag',
             onTouchTap: this.handleFlagDropdownClick,
-            className: 'selected-flag',
+            className: selectedFlagStyle,
             title: selectedCountry.name + ': + ' + selectedCountry.dialCode,
             role: 'menuitem'
           },
