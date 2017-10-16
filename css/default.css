@@ -1,6 +1,6 @@
 .react-tel-input {
   display: flex;
-  width: 250px;
+  width: 100%;
   align-items: center; }
   .react-tel-input .ad {
     background-position: -16px 0; }
@@ -505,13 +505,15 @@
     .react-tel-input input[disabled] + .flag-dropdown:hover .selected-flag {
       background-color: transparent; }
   .react-tel-input .selected-flag {
-    width: 38px;
-    height: 26px;
+    width: 38px !important;
+    height: 26px !important;
     padding: 5px 0 0 8px;
     border-radius: 3px 0 0 3px; }
     .react-tel-input .selected-flag .flag {
       margin-top: -5px;
-      display: inline-block; }
+      display: inline-block;
+      width: 16px !important;
+      height: 11px; }
     .react-tel-input .selected-flag .arrow {
       width: 0;
       height: 0;
@@ -545,6 +547,8 @@
     .react-tel-input .country-list .flag {
       margin-right: 6px;
       margin-top: 2px;
-      display: inline-block; }
+      display: inline-block;
+      width: 16px !important;
+      height: 11px; }
     .react-tel-input .country-list .country-name {
       margin-right: 6px; }

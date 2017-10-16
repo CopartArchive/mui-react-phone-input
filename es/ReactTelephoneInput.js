@@ -62,8 +62,6 @@ var getUnformattedValue = function getUnformattedValue(formattedValue) {
 var getFlagStyle = function getFlagStyle() {
   var flagsImagePath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : flagImage;
   return {
-    width: 16,
-    height: 11,
     backgroundImage: 'url(' + flagsImagePath + ')'
   };
 };

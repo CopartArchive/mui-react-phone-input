@@ -52,8 +52,6 @@ const keys = {
 const DELIMITER_REGEX = /([.?*+^$[\]\\(){}|-\s])/g
 const getUnformattedValue = formattedValue => formattedValue.replace(DELIMITER_REGEX, '')
 const getFlagStyle = (flagsImagePath = flagImage) => ({
-  width: 16,
-  height: 11,
   backgroundImage: `url(${flagsImagePath})`
 })
 const FlagIcon = ({ inputFlagClasses }) =>

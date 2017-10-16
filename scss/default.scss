@@ -1,7 +1,7 @@
 
 .react-tel-input {
     display: flex;
-    width: 250px;
+    width: 100%;
     align-items: center;
     @import 'countries';
     * {
@@ -61,13 +61,15 @@
         }
     }
     .selected-flag {
-        width: 38px;
-        height: 26px;
+        width: 38px !important;
+        height: 26px !important;
         padding: 5px 0 0 8px;
         border-radius: 3px 0 0 3px;
         .flag {
             margin-top: -5px;
             display: inline-block;
+            width: 16px !important;
+            height: 11px;
         }
         .arrow {
             width: 0;
@@ -110,6 +112,8 @@
             margin-right: 6px;
             margin-top: 2px;
             display: inline-block;
+            width: 16px !important;
+            height: 11px;
         }
         .country-name {
             margin-right: 6px;
