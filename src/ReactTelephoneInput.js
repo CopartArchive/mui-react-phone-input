@@ -112,6 +112,14 @@ const propTypes = {
   isValid: PropTypes.func,
   placeholder: PropTypes.string,
   flagDropDownEnabled: PropTypes.bool,
+  floatingLabelText: PropTypes.string,
+  floatingLabelStyle: PropTypes.shape(),
+  name: PropTypes.string,
+  inputStyle: PropTypes.shape(),
+  underlineFocusStyle: PropTypes.shape(),
+  floatingLabelFixed: PropTypes.bool,
+  multiLine: PropTypes.bool,
+  hintStyle: PropTypes.shape(),
 }
 const defaultProps = {
   autoFormat: true,
@@ -129,6 +137,14 @@ const defaultProps = {
   inputId: 'telephone-input',
   flagDropDownEnabled: true,
   onChange: null,
+  floatingLabelText: '',
+  floatingLabelStyle: {},
+  name: 'phone',
+  inputStyle: {},
+  underlineFocusStyle: {},
+  floatingLabelFixed: true,
+  multiLine: false,
+  hintStyle: {},
 }
 class ReactTelephoneInput extends React.Component {
   constructor(props) {
@@ -740,6 +756,7 @@ class ReactTelephoneInput extends React.Component {
     })
     render() {
       const { inputId: id,
+        name,
         isValid,
         autoComplete,
         placeholder,
@@ -748,6 +765,13 @@ class ReactTelephoneInput extends React.Component {
         flagDropDownEnabled,
         style,
         errorText,
+        floatingLabelText,
+        floatingLabelStyle,
+        inputStyle,
+        underlineFocusStyle,
+        floatingLabelFixed,
+        multiLine,
+        hintStyle,
         required } = this.props
       const { formattedNumber, showDropDown, selectedCountry } = this.state
       const {
@@ -819,10 +843,18 @@ class ReactTelephoneInput extends React.Component {
             hintText={placeholder}
             disabled={disabled}
             id={id}
+            name={name}
             style={style}
             errorText={errorText}
             title={formattedNumber}
             maxLength={selectedCountry.format.length}
+            floatingLabelText={floatingLabelText}
+            floatingLabelStyle={floatingLabelStyle}
+            inputStyle={inputStyle}
+            underlineFocusStyle={underlineFocusStyle}
+            floatingLabelFixed={floatingLabelFixed}
+            multiLine={multiLine}
+            hintStyle={hintStyle}
           />
 
         </div>

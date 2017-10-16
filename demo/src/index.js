@@ -14,6 +14,8 @@ const Demo = () => (<div>
       flagsImagePath="./images/flags.png"
       name="phone"
       onChange={(target,formattedNumber) => console.log(`${target.value} - ${formattedNumber}`, 'Target object and current value')}
+      floatingLabelText="phone"
+      floatingLabelStyle={{ color: '#01579b' }}
     />
   </MuiThemeProvider>
 </div>)
