@@ -803,7 +803,8 @@ class ReactTelephoneInput extends React.Component {
       });
       const flagViewClasses = classNames({
         [`${flagDropdownStyle}`]: true,
-        [`${openDropdownStyle}`]: showDropDown
+        [`${openDropdownStyle}`]: showDropDown,
+        [`${hideStyle}`]: !flagDropDownEnabled,
       });
       const inputFlagClasses = classNames({
         [`${flagStyle}`]: true,
