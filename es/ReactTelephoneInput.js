@@ -35,6 +35,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import styles from '../css/default.css';
+import flagImage from '../images/flags.png';
 
 var allCountries = countryData.allCountries;
 var iso2Lookup = countryData.iso2Lookup;
@@ -56,7 +57,7 @@ var keys = {
 };
 
 var getFlagStyle = function getFlagStyle() {
-  var flagsImagePath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'images/flags.png';
+  var flagsImagePath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : flagImage;
   return {
     width: 16,
     height: 11,
