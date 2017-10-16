@@ -49,7 +49,8 @@ const keys = {
   Z: 90,
   SPACE: 32
 };
-
+const DELIMITER_REGEX = /([.?*+^$[\]\\(){}|-\s])/g
+const getUnformattedValue = formattedValue => formattedValue.replace(DELIMITER_REGEX, '')
 const getFlagStyle = (flagsImagePath = flagImage) => ({
   width: 16,
   height: 11,
@@ -172,7 +173,8 @@ class ReactTelephoneInput extends React.Component {
       this.props.onChange(
         this.numberInput.input,
         this.state.formattedNumber,
-        this.state.selectedCountry
+        this.state.selectedCountry,
+        getUnformattedValue(this.state.formattedNumber)
       )
     }
   }
@@ -523,7 +525,8 @@ class ReactTelephoneInput extends React.Component {
               this.props.onChange(
                 this.numberInput.input,
                 formattedNumber,
-                nextSelectedCountry
+                nextSelectedCountry,
+                getUnformattedValue(this.state.formattedNumber)
               )
             }
           }
@@ -616,7 +619,8 @@ class ReactTelephoneInput extends React.Component {
           this.props.onChange(
             this.numberInput.input,
             this.state.formattedNumber,
-            this.state.selectedCountry
+            this.state.selectedCountry,
+            getUnformattedValue(this.state.formattedNumber)
           )
         }
       }

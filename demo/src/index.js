@@ -5,6 +5,9 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import RTI from '../../src/withStyles'
 
 injectTapEventPlugin();
+const changeHandler = (target, formattedNumber, selectedCountry, rawValue) => {
+  console.log(`${target.value} - ${formattedNumber} - ${rawValue}`, 'Target object and current value')
+}
 const Demo = () => (<div>
   <h1>React Telephone Input Demo</h1>
   <MuiThemeProvider>
@@ -13,9 +16,10 @@ const Demo = () => (<div>
       defaultCountry="in"
       flagsImagePath="./images/flags.png"
       name="phone"
-      onChange={(target,formattedNumber) => console.log(`${target.value} - ${formattedNumber}`, 'Target object and current value')}
+      onChange={changeHandler}
       floatingLabelText="phone"
       floatingLabelStyle={{ color: '#01579b' }}
+      value={'1231212267'}
     />
   </MuiThemeProvider>
 </div>)
