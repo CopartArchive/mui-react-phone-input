@@ -28,7 +28,7 @@ import countryData from 'country-telephone-data';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import '../css/default.css';
+import styles from '../css/default.css';
 
 
 const allCountries = countryData.allCountries;
@@ -187,17 +187,25 @@ class ReactTelephoneInput extends React.Component {
 
 
   getCountryDropDownList() {
+    const { country: countryStyle,
+      preferred, highlight,
+      flag: flagIconStyle,
+      'country-list': countryListStyle,
+      hide: hideStyle } = styles
     const self = this;
     const countryDropDownList = map(
       this.state.preferredCountries.concat(this.props.onlyCountries),
       (country, index) => {
         const itemClasses = classNames({
-          country: true,
-          preferred: findIndex(self.state.preferredCountries, { iso2: country.iso2 }) >= 0,
-          highlight: self.state.highlightCountryIndex === index
+          [`${countryStyle}`]: true,
+          [`${preferred}`]: findIndex(self.state.preferredCountries, { iso2: country.iso2 }) >= 0,
+          [`${highlight}`]: self.state.highlightCountryIndex === index
         })
-
-        const inputFlagClasses = `flag ${country.iso2}`;
+        const inputFlagClasses = classNames({
+          [`${flagIconStyle}`]: true,
+          [`${styles[country.iso2]}`]: true,
+        })
+        // const inputFlagClasses = `flag ${country.iso2}`;
 
         return (
           <ListItem
@@ -224,8 +232,8 @@ class ReactTelephoneInput extends React.Component {
     )
 
     const dropDownClasses = classNames({
-      'country-list': true,
-      hide: !this.state.showDropDown
+      [`${countryListStyle}`]: true,
+      [`${hideStyle}`]: !this.state.showDropDown
     })
     return (
       <List ref={elem => this.flagDropdownList = elem} className={dropDownClasses}>
@@ -400,7 +408,7 @@ class ReactTelephoneInput extends React.Component {
       if (event.preventDefault) {
         event.preventDefault()
       } else {
-        event.returnValue = false
+        event.returnValue = false // eslint-disable-line no-param-reassign
       }
 
       const self = this;
@@ -739,37 +747,51 @@ class ReactTelephoneInput extends React.Component {
         errorText,
         required } = this.props
       const { formattedNumber, showDropDown, selectedCountry } = this.state
+      const {
+        arrow: arrowStyle,
+        up: upStyle,
+        'react-tel-input': rootStyle,
+        'form-control': formControlStyle,
+        'flag-dropdown': flagDropdownStyle,
+        'open-dropdown': openDropdownStyle,
+        flag: flagStyle,
+        'invalid-number': invalidNumberStyle,
+        'selected-flag': selectedFlagStyle
+      } = styles
+      const selectedCountryFlagStyle = styles[selectedCountry.iso2]
+      const rootClasses = classNames({
+        [`${rootStyle}`]: true
+      }
+      )
       const arrowClasses = classNames({
-        arrow: true,
-        up: showDropDown
+        [`${arrowStyle}`]: true,
+        [`${upStyle}`]: showDropDown
       });
       const inputClasses = classNames({
-        'form-control': true,
-        'invalid-number': !isValid(formattedNumber.replace(/\D/g, ''))
+        [`${formControlStyle}`]: true,
+        [`${invalidNumberStyle}`]: !isValid(formattedNumber.replace(/\D/g, ''))
       });
-
       const flagViewClasses = classNames({
-        'flag-dropdown': true,
-        'open-dropdown': showDropDown
+        [`${flagDropdownStyle}`]: true,
+        [`${openDropdownStyle}`]: showDropDown
       });
-
-      const inputFlagClasses = `flag ${selectedCountry.iso2}`;
+      const inputFlagClasses = classNames({
+        [`${flagStyle}`]: true,
+        [`${selectedCountryFlagStyle}`]: true
+      })
       return (
         <div
-          className={classNames(
-            'react-tel-input',
-            this.props.classNames,
-            this.props.className
-          )}
+          className={rootClasses}
         >
           <div
             ref={(input) => { this.flagDropDownButton = input; }}
             className={flagViewClasses}
             onKeyDown={this.handleKeydown}
           >
-            <div ref="selectedFlag"
+            <div
+              ref="selectedFlag"
               onTouchTap={this.handleFlagDropdownClick}
-              className="selected-flag"
+              className={selectedFlagStyle}
               title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
               role="menuitem"
             >

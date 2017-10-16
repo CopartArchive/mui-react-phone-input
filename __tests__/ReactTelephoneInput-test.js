@@ -10,7 +10,7 @@ chai.use(dirtyChai);
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { shallow, mount } from 'enzyme'
-import TestUtils from 'react-addons-test-utils'
+import TestUtils from 'react-dom/test-utils'
 import renderer from 'react-test-renderer'
 import  { ReactTelephoneInput } from '../src/ReactTelephoneInput.js'
 import countryData from 'country-telephone-data'
