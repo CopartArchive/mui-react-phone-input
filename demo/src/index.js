@@ -13,13 +13,12 @@ const Demo = () => (<div>
   <MuiThemeProvider>
 
     <RTI
-      defaultCountry="in"
       flagsImagePath="./images/flags.png"
       name="phone"
       onChange={changeHandler}
       floatingLabelText="phone"
       floatingLabelStyle={{ color: '#01579b' }}
-      value={'1231212267'}
+      value={''}
     />
   </MuiThemeProvider>
 </div>)
