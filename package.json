@@ -8,7 +8,8 @@
     "css",
     "es",
     "lib",
-    "umd"
+    "umd",
+    "images"
   ],
   "scripts": {
     "build": "npx nwb build-react-component",

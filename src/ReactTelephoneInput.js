@@ -29,7 +29,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import styles from '../css/default.css';
-
+import flagImage from '../images/flags.png'
 
 const allCountries = countryData.allCountries;
 const iso2Lookup = countryData.iso2Lookup;
@@ -50,7 +50,7 @@ const keys = {
   SPACE: 32
 };
 
-const getFlagStyle = (flagsImagePath = 'images/flags.png') => ({
+const getFlagStyle = (flagsImagePath = flagImage) => ({
   width: 16,
   height: 11,
   backgroundImage: `url(${flagsImagePath})`
