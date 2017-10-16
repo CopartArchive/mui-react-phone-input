@@ -730,7 +730,7 @@ var ReactTelephoneInput = function (_React$Component) {
             title: selectedCountry.name + ': + ' + selectedCountry.dialCode,
             role: 'menuitem'
           },
-          React.createElement(FlagIcon, { inputFlagClasses: inputFlagClasses }),
+          flagDropDownEnabled && React.createElement(FlagIcon, { inputFlagClasses: inputFlagClasses }),
           flagDropDownEnabled && selectedCountryFlagStyle && React.createElement('div', { className: arrowClasses })
         ),
         flagDropDownEnabled && showDropDown ? this.getCountryDropDownList() : ''

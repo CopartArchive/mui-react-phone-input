@@ -824,7 +824,7 @@ class ReactTelephoneInput extends React.Component {
               title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
               role="menuitem"
             >
-              <FlagIcon inputFlagClasses={inputFlagClasses} />
+              { flagDropDownEnabled && <FlagIcon inputFlagClasses={inputFlagClasses} /> }
               { flagDropDownEnabled && selectedCountryFlagStyle && <div className={arrowClasses} />}
             </div>
             {flagDropDownEnabled && showDropDown ? this.getCountryDropDownList() : ''}
