@@ -34,8 +34,9 @@ import countryData from 'country-telephone-data';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
-import '../css/default.css';
+import styles from '../css/default.css';
 
+console.log(styles['react-tel-input']);
 var allCountries = countryData.allCountries;
 var iso2Lookup = countryData.iso2Lookup;
 var allCountryCodes = countryData.allCountryCodes;
@@ -112,6 +113,8 @@ CountryText.defaultProps = {
 var propTypes = {
   value: PropTypes.string,
   initialValue: PropTypes.string,
+  style: PropTypes.shape(),
+  errorText: PropTypes.string,
   autoFormat: PropTypes.bool,
   defaultCountry: PropTypes.string,
   onlyCountries: PropTypes.arrayOf(PropTypes.object),
@@ -133,6 +136,7 @@ var propTypes = {
 };
 var defaultProps = {
   autoFormat: true,
+  errorText: '',
   onlyCountries: allCountries,
   defaultCountry: allCountries[0].iso2,
   isValid: isNumberValid,
@@ -144,7 +148,8 @@ var defaultProps = {
   autoComplete: false,
   required: false,
   inputId: 'telephone-input',
-  flagDropDownEnabled: true
+  flagDropDownEnabled: true,
+  onChange: null
 };
 
 var ReactTelephoneInput = function (_React$Component) {
@@ -646,6 +651,8 @@ var ReactTelephoneInput = function (_React$Component) {
         pattern = _props.pattern,
         disabled = _props.disabled,
         flagDropDownEnabled = _props.flagDropDownEnabled,
+        style = _props.style,
+        errorText = _props.errorText,
         required = _props.required;
     var _state = this.state,
         formattedNumber = _state.formattedNumber,
@@ -712,6 +719,9 @@ var ReactTelephoneInput = function (_React$Component) {
         hintText: placeholder,
         disabled: disabled,
         id: id,
+        style: style,
+        errorText: errorText,
+        title: formattedNumber,
         maxLength: selectedCountry.format.length
       })
     );

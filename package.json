@@ -17,8 +17,8 @@
     "lint": "eslint src",
     "test": "jest",
     "test: coverage": "jest --coverage",
-     "test:watch": "jest --watch",
-     "updatecss": "gulp sass"
+    "test:watch": "jest --watch",
+    "updatecss": "gulp sass"
   },
   "jest": {
     "transform": {
@@ -44,7 +44,7 @@
   "devDependencies": {
     "babel-eslint": "^8.0.1",
     "babel-jest": "20.0.3",
-    "babel-preset-latest": "6.24.1",
+    "babel-preset-env": "1.6.0",
     "babel-preset-react": "6.24.1",
     "chai": "^3.0.0",
     "dirty-chai": "^1.2.2",
@@ -59,10 +59,12 @@
     "jest": "20.0.4",
     "npx": "^9.6.0",
     "nwb": "0.19.x",
-    "react-addons-test-utils": "15.6.0",
     "react-test-renderer": "15.6.1",
     "regenerator-runtime": "0.10.5",
-    "nwb-sass": "^0.8.1"
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-tap-event-plugin": "^1.0.0",
+    "material-ui": "^0.15.4"
   },
   "dependencies": {
     "classnames": "^2.1.2",
@@ -72,6 +74,7 @@
   },
   "peerDependencies": {
     "react": "^15.4.2",
+    "react-dom": "^15.4.2",
     "material-ui": "0.15.4",
     "react-tap-event-plugin": "1.0.0",
     "prop-types": "^15.5.10"
