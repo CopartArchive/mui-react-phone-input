@@ -126,13 +126,13 @@ const defaultProps = {
   autoFormat: true,
   errorText: '',
   onlyCountries: allCountries,
-  defaultCountry: allCountries[0].iso2,
+  defaultCountry: '',
   isValid: isNumberValid,
   flagsImagePath: 'flags.png',
   onEnterKeyPress: null,
   preferredCountries: [],
   disabled: false,
-  placeholder: '+1 (702) 123-4567',
+  placeholder: ' 1 (702) 123-4567',
   autoComplete: false,
   required: false,
   inputId: 'telephone-input',
@@ -320,7 +320,7 @@ class ReactTelephoneInput extends React.Component {
         this
       )
     } else {
-      return secondBestGuess
+      return this.props.defaultCountry ? secondBestGuess : { dialCode: '', priority: 10001 }
     }
 
     if (!bestGuess.name) {
@@ -827,7 +827,7 @@ class ReactTelephoneInput extends React.Component {
               role="menuitem"
             >
               <FlagIcon inputFlagClasses={inputFlagClasses} />
-              { flagDropDownEnabled && <div className={arrowClasses} />}
+              { flagDropDownEnabled && selectedCountryFlagStyle && <div className={arrowClasses} />}
             </div>
             {flagDropDownEnabled && showDropDown ? this.getCountryDropDownList() : ''}
           </div>
@@ -851,7 +851,7 @@ class ReactTelephoneInput extends React.Component {
             style={style}
             errorText={errorText}
             title={formattedNumber}
-            maxLength={selectedCountry.format.length}
+            maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
             floatingLabelText={floatingLabelText}
             floatingLabelStyle={floatingLabelStyle}
             inputStyle={inputStyle}
