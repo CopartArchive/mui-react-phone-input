@@ -132,7 +132,15 @@ var propTypes = {
   autoComplete: PropTypes.bool,
   isValid: PropTypes.func,
   placeholder: PropTypes.string,
-  flagDropDownEnabled: PropTypes.bool
+  flagDropDownEnabled: PropTypes.bool,
+  floatingLabelText: PropTypes.string,
+  floatingLabelStyle: PropTypes.shape(),
+  name: PropTypes.string,
+  inputStyle: PropTypes.shape(),
+  underlineFocusStyle: PropTypes.shape(),
+  floatingLabelFixed: PropTypes.bool,
+  multiLine: PropTypes.bool,
+  hintStyle: PropTypes.shape()
 };
 var defaultProps = {
   autoFormat: true,
@@ -149,7 +157,15 @@ var defaultProps = {
   required: false,
   inputId: 'telephone-input',
   flagDropDownEnabled: true,
-  onChange: null
+  onChange: null,
+  floatingLabelText: '',
+  floatingLabelStyle: {},
+  name: 'phone',
+  inputStyle: {},
+  underlineFocusStyle: {},
+  floatingLabelFixed: true,
+  multiLine: false,
+  hintStyle: {}
 };
 
 var ReactTelephoneInput = function (_React$Component) {
@@ -653,6 +669,7 @@ var ReactTelephoneInput = function (_React$Component) {
 
     var _props = this.props,
         id = _props.inputId,
+        name = _props.name,
         isValid = _props.isValid,
         autoComplete = _props.autoComplete,
         placeholder = _props.placeholder,
@@ -661,6 +678,13 @@ var ReactTelephoneInput = function (_React$Component) {
         flagDropDownEnabled = _props.flagDropDownEnabled,
         style = _props.style,
         errorText = _props.errorText,
+        floatingLabelText = _props.floatingLabelText,
+        floatingLabelStyle = _props.floatingLabelStyle,
+        inputStyle = _props.inputStyle,
+        underlineFocusStyle = _props.underlineFocusStyle,
+        floatingLabelFixed = _props.floatingLabelFixed,
+        multiLine = _props.multiLine,
+        hintStyle = _props.hintStyle,
         required = _props.required;
     var _state = this.state,
         formattedNumber = _state.formattedNumber,
@@ -728,10 +752,18 @@ var ReactTelephoneInput = function (_React$Component) {
         hintText: placeholder,
         disabled: disabled,
         id: id,
+        name: name,
         style: style,
         errorText: errorText,
         title: formattedNumber,
-        maxLength: selectedCountry.format.length
+        maxLength: selectedCountry.format.length,
+        floatingLabelText: floatingLabelText,
+        floatingLabelStyle: floatingLabelStyle,
+        inputStyle: inputStyle,
+        underlineFocusStyle: underlineFocusStyle,
+        floatingLabelFixed: floatingLabelFixed,
+        multiLine: multiLine,
+        hintStyle: hintStyle
       })
     );
   };
