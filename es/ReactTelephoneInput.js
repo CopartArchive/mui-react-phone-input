@@ -274,7 +274,7 @@ var ReactTelephoneInput = function (_React$Component) {
         }
 
         if (_this.props.onChange) {
-          _this.props.onChange(_this.state.formattedNumber, _this.state.selectedCountry);
+          _this.props.onChange(_this.numberInput.input, _this.state.formattedNumber, _this.state.selectedCountry);
         }
       };
       _this.setState({
@@ -340,7 +340,7 @@ var ReactTelephoneInput = function (_React$Component) {
     document.addEventListener('keydown', this.handleKeydown);
     this._cursorToEnd(true);
     if (typeof this.props.onChange === 'function') {
-      this.props.onChange(this.state.formattedNumber, this.state.selectedCountry);
+      this.props.onChange(this.numberInput.input, this.state.formattedNumber, this.state.selectedCountry);
     }
   };
 
@@ -586,7 +586,7 @@ var ReactTelephoneInput = function (_React$Component) {
       }, function () {
         _this3._cursorToEnd();
         if (_this3.props.onChange) {
-          _this3.props.onChange(formattedNumber, nextSelectedCountry);
+          _this3.props.onChange(_this3.numberInput.input, formattedNumber, nextSelectedCountry);
         }
       });
     } else {
