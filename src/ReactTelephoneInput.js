@@ -154,6 +154,7 @@ class ReactTelephoneInput extends React.Component {
     this._cursorToEnd(true)
     if (typeof this.props.onChange === 'function') {
       this.props.onChange(
+        this.numberInput.input,
         this.state.formattedNumber,
         this.state.selectedCountry
       )
@@ -504,6 +505,7 @@ class ReactTelephoneInput extends React.Component {
             this._cursorToEnd()
             if (this.props.onChange) {
               this.props.onChange(
+                this.numberInput.input,
                 formattedNumber,
                 nextSelectedCountry
               )
@@ -596,6 +598,7 @@ class ReactTelephoneInput extends React.Component {
 
         if (this.props.onChange) {
           this.props.onChange(
+            this.numberInput.input,
             this.state.formattedNumber,
             this.state.selectedCountry
           )

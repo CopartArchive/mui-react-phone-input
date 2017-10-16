@@ -12,6 +12,8 @@ const Demo = () => (<div>
     <RTI
       defaultCountry="in"
       flagsImagePath="./images/flags.png"
+      name="phone"
+      onChange={(target,formattedNumber) => console.log(`${target.value} - ${formattedNumber}`, 'Target object and current value')}
     />
   </MuiThemeProvider>
 </div>)
