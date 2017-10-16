@@ -707,7 +707,7 @@ var ReactTelephoneInput = function (_React$Component) {
     var rootClasses = classNames((_classNames4 = {}, _classNames4['' + rootStyle] = true, _classNames4));
     var arrowClasses = classNames((_classNames5 = {}, _classNames5['' + arrowStyle] = true, _classNames5['' + upStyle] = showDropDown, _classNames5));
     var inputClasses = classNames((_classNames6 = {}, _classNames6['' + formControlStyle] = true, _classNames6['' + invalidNumberStyle] = !isValid(formattedNumber.replace(/\D/g, '')), _classNames6));
-    var flagViewClasses = classNames((_classNames7 = {}, _classNames7['' + flagDropdownStyle] = true, _classNames7['' + openDropdownStyle] = showDropDown, _classNames7));
+    var flagViewClasses = classNames((_classNames7 = {}, _classNames7['' + flagDropdownStyle] = true, _classNames7['' + openDropdownStyle] = showDropDown, _classNames7['' + hideStyle] = !flagDropDownEnabled, _classNames7));
     var inputFlagClasses = classNames((_classNames8 = {}, _classNames8['' + flagStyle] = true, _classNames8['' + selectedCountryFlagStyle] = true, _classNames8));
     var flagDropdownContainerClasses = classNames((_classNames9 = {}, _classNames9['' + selectedFlagStyle] = true, _classNames9['' + hideStyle] = !flagDropDownEnabled, _classNames9));
     return React.createElement(
