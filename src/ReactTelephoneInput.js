@@ -779,6 +779,7 @@ class ReactTelephoneInput extends React.Component {
       const {
         arrow: arrowStyle,
         up: upStyle,
+        hide:hideStyle,
         'react-tel-input': rootStyle,
         'form-control': formControlStyle,
         'flag-dropdown': flagDropdownStyle,
@@ -808,6 +809,10 @@ class ReactTelephoneInput extends React.Component {
         [`${flagStyle}`]: true,
         [`${selectedCountryFlagStyle}`]: true
       })
+      const flagDropdownContainerClasses = classNames({
+        [`${selectedFlagStyle}`]:true,
+        [`${hideStyle}`]: !flagDropDownEnabled,
+      })
       return (
         <div
           className={rootClasses}
@@ -820,7 +825,7 @@ class ReactTelephoneInput extends React.Component {
             <div
               ref="selectedFlag"
               onTouchTap={this.handleFlagDropdownClick}
-              className={selectedFlagStyle}
+              className={flagDropdownContainerClasses}
               title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
               role="menuitem"
             >

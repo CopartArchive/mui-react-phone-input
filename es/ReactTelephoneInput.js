@@ -666,6 +666,7 @@ var ReactTelephoneInput = function (_React$Component) {
         _classNames6,
         _classNames7,
         _classNames8,
+        _classNames9,
         _this4 = this;
 
     var _props = this.props,
@@ -693,6 +694,7 @@ var ReactTelephoneInput = function (_React$Component) {
         selectedCountry = _state.selectedCountry;
     var arrowStyle = styles.arrow,
         upStyle = styles.up,
+        hideStyle = styles.hide,
         rootStyle = styles['react-tel-input'],
         formControlStyle = styles['form-control'],
         flagDropdownStyle = styles['flag-dropdown'],
@@ -707,6 +709,7 @@ var ReactTelephoneInput = function (_React$Component) {
     var inputClasses = classNames((_classNames6 = {}, _classNames6['' + formControlStyle] = true, _classNames6['' + invalidNumberStyle] = !isValid(formattedNumber.replace(/\D/g, '')), _classNames6));
     var flagViewClasses = classNames((_classNames7 = {}, _classNames7['' + flagDropdownStyle] = true, _classNames7['' + openDropdownStyle] = showDropDown, _classNames7));
     var inputFlagClasses = classNames((_classNames8 = {}, _classNames8['' + flagStyle] = true, _classNames8['' + selectedCountryFlagStyle] = true, _classNames8));
+    var flagDropdownContainerClasses = classNames((_classNames9 = {}, _classNames9['' + selectedFlagStyle] = true, _classNames9['' + hideStyle] = !flagDropDownEnabled, _classNames9));
     return React.createElement(
       'div',
       {
@@ -726,7 +729,7 @@ var ReactTelephoneInput = function (_React$Component) {
           {
             ref: 'selectedFlag',
             onTouchTap: this.handleFlagDropdownClick,
-            className: selectedFlagStyle,
+            className: flagDropdownContainerClasses,
             title: selectedCountry.name + ': + ' + selectedCountry.dialCode,
             role: 'menuitem'
           },
