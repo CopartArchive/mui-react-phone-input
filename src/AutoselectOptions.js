@@ -16,7 +16,7 @@ const AutoSelectOptionsItem = ({ value, onListItemSelect }) => {
   return (<ListItem primaryText={value} onTouchTap={handleAutoSelectTouchTap(value)} />)
 }
 AutoSelectOptionsItem.propTypes = {
-  value: PropTypes.number.isRequired,
+  value: PropTypes.string.isRequired,
   onListItemSelect: PropTypes.func.isRequired,
 }
 const AutoselectOptions = ({ options, onListItemSelect }) => (

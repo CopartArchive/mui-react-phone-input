@@ -676,6 +676,62 @@ class ReactTelephoneInput extends React.Component {
     }
     handleAutoselectListSelect = (selectedValue) => {
       console.log(selectedValue, 'In handle autoselect list select')
+      let formattedNumber = '+';
+
+      // if the input is the same as before, must be some special key like enter etc.
+      if (selectedValue === this.state.formattedNumber) {
+        return
+      }
+      const newSelectedCountry = this.guessSelectedCountry(
+        selectedValue.substring(0, 6)
+      )
+      formattedNumber = this.formatNumber(
+        selectedValue,
+        newSelectedCountry.format
+      )
+      let caretPosition = this.numberInput.input.selectionStart;
+      const oldFormattedText = this.state.formattedNumber;
+      const diff = formattedNumber.length - oldFormattedText.length;
+      console.log(diff, 'New selected country')
+      const onSetStateComplete = () => {
+        if (isModernBrowser) {
+          if (caretPosition === 1 && formattedNumber.length === 2) {
+            caretPosition += 1
+          }
+
+          if (diff > 0) {
+            caretPosition -= diff
+          }
+
+          if (
+            caretPosition > 0 &&
+                      oldFormattedText.length >= formattedNumber.length
+          ) {
+            this.numberInput.input.setSelectionRange(
+              caretPosition,
+              caretPosition
+            )
+          }
+        }
+
+        if (this.props.onChange) {
+          this.props.onChange(
+            this.numberInput.input,
+            this.state.formattedNumber,
+            this.state.selectedCountry,
+            getUnformattedValue(this.state.formattedNumber)
+          )
+        }
+      }
+      this.setState(
+        {
+          formattedNumber,
+          selectedCountry:
+          newSelectedCountry.dialCode.length > 0
+            ? newSelectedCountry : this.state.selectedCountry
+        },
+        onSetStateComplete
+      )
     }
     _mapPropsToState(props, firstCall = false) {
       let inputNumber
@@ -873,7 +929,7 @@ class ReactTelephoneInput extends React.Component {
           </div>
           <div className={autoSelectMenuContainerStyle}>
             <AutoselectOptions
-              options={[{ value: 1234 }, { value: 24567 }]}
+              options={[{ value: '917981249819' }, { value: '19029325192' }]}
               onListItemSelect={this.handleAutoselectListSelect}
             />
           </div>
