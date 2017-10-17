@@ -1,6 +1,7 @@
 .react-tel-input {
   display: flex;
-  width: 100%;
+  width: 250px;
+  flex-wrap: wrap;
   align-items: center; }
   .react-tel-input .ad {
     background-position: -16px 0; }
@@ -470,6 +471,8 @@
     display: none; }
   .react-tel-input .v-hide {
     visibility: hidden; }
+  .react-tel-input .phone-text-field-container {
+    flex: 0 1 80%; }
   .react-tel-input input[type=text],
   .react-tel-input input[type=tel] {
     width: 100%; }
@@ -492,7 +495,8 @@
     .react-tel-input .flag-dropdown.open-dropdown {
       background: #fff;
       border-bottom: 0;
-      border-radius: 3px 0 0 0; }
+      border-radius: 3px 0 0 0;
+      position: relative; }
       .react-tel-input .flag-dropdown.open-dropdown .selected-flag {
         background: #fff;
         border-radius: 3px 0 0 0; }
@@ -535,7 +539,8 @@
     max-height: 200px;
     overflow-y: scroll;
     border-radius: 0 0 3px 3px;
-    top: 26px; }
+    position: absolute;
+    top: 46px; }
     .react-tel-input .country-list .country {
       padding: 5px 10px; }
       .react-tel-input .country-list .country .dial-code {
@@ -552,3 +557,5 @@
       height: 11px; }
     .react-tel-input .country-list .country-name {
       margin-right: 6px; }
+  .react-tel-input .autoselect-menu-container {
+    flex: 0 1 100%; }

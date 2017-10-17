@@ -18,7 +18,7 @@ const Demo = () => (<div>
       onChange={changeHandler}
       floatingLabelText="phone"
       floatingLabelStyle={{ color: '#01579b' }}
-      flagDropDownEnabled={false}
+      flagDropDownEnabled={true}
       value={''}
     />
   </MuiThemeProvider>

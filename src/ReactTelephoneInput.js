@@ -29,7 +29,8 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import styles from '../css/default.css';
-import flagImage from '../images/flags.png'
+import flagImage from '../images/flags.png';
+import AutoselectOptions from './AutoselectOptions';
 
 const allCountries = countryData.allCountries;
 const iso2Lookup = countryData.iso2Lookup;
@@ -119,6 +120,8 @@ const propTypes = {
   floatingLabelFixed: PropTypes.bool,
   multiLine: PropTypes.bool,
   hintStyle: PropTypes.shape(),
+  autoSelect: PropTypes.bool,
+  autoSelectOptions: PropTypes.arrayOf(PropTypes.shape())
 }
 const defaultProps = {
   autoFormat: true,
@@ -144,6 +147,8 @@ const defaultProps = {
   floatingLabelFixed: true,
   multiLine: false,
   hintStyle: {},
+  autoSelect: false,
+  autoSelectOptions: [],
 }
 class ReactTelephoneInput extends React.Component {
   constructor(props) {
@@ -677,7 +682,9 @@ class ReactTelephoneInput extends React.Component {
         )
       }
     }
-
+    handleAutoselectListSelect = (selectedValue) => {
+      console.log(selectedValue, 'In handle autoselect list select')
+    }
     _mapPropsToState(props, firstCall = false) {
       let inputNumber
 
@@ -759,6 +766,8 @@ class ReactTelephoneInput extends React.Component {
     render() {
       const { inputId: id,
         name,
+        autoSelect,
+        autoSelectOptions,
         isValid,
         autoComplete,
         placeholder,
@@ -779,14 +788,16 @@ class ReactTelephoneInput extends React.Component {
       const {
         arrow: arrowStyle,
         up: upStyle,
-        hide:hideStyle,
+        hide: hideStyle,
         'react-tel-input': rootStyle,
         'form-control': formControlStyle,
         'flag-dropdown': flagDropdownStyle,
         'open-dropdown': openDropdownStyle,
         flag: flagStyle,
         'invalid-number': invalidNumberStyle,
-        'selected-flag': selectedFlagStyle
+        'selected-flag': selectedFlagStyle,
+        'phone-text-field-container': textFieldContainerStyle,
+        'autoselect-menu-container': autoSelectMenuContainerStyle,
       } = styles
       const selectedCountryFlagStyle = styles[selectedCountry.iso2]
       const rootClasses = classNames({
@@ -814,6 +825,7 @@ class ReactTelephoneInput extends React.Component {
         [`${selectedFlagStyle}`]:true,
         [`${hideStyle}`]: !flagDropDownEnabled,
       })
+
       return (
         <div
           className={rootClasses}
@@ -835,36 +847,44 @@ class ReactTelephoneInput extends React.Component {
             </div>
             {flagDropDownEnabled && showDropDown ? this.getCountryDropDownList() : ''}
           </div>
-          <TextField
-            onChange={this.handleInput}
-            onTouchTap={this.handleInputClick}
-            onFocus={this.handleInputFocus}
-            onBlur={this.handleInputBlur}
-            onKeyDown={this.handleInputKeyDown}
-            value={formattedNumber}
-            ref={(input) => { this.numberInput = input; }}
-            type="tel"
-            className={inputClasses}
-            autoComplete={autoComplete}
-            pattern={pattern}
-            required={required}
-            hintText={placeholder}
-            disabled={disabled}
-            id={id}
-            name={name}
-            style={style}
-            errorText={errorText}
-            title={formattedNumber}
-            maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
-            floatingLabelText={floatingLabelText}
-            floatingLabelStyle={floatingLabelStyle}
-            inputStyle={inputStyle}
-            underlineFocusStyle={underlineFocusStyle}
-            floatingLabelFixed={floatingLabelFixed}
-            multiLine={multiLine}
-            hintStyle={hintStyle}
-          />
-
+          <div className={textFieldContainerStyle}>
+            <TextField
+              onChange={this.handleInput}
+              onTouchTap={this.handleInputClick}
+              onFocus={this.handleInputFocus}
+              onBlur={this.handleInputBlur}
+              onKeyDown={this.handleInputKeyDown}
+              value={formattedNumber}
+              ref={(input) => { this.numberInput = input; }}
+              type="tel"
+              className={inputClasses}
+              autoComplete={autoComplete}
+              pattern={pattern}
+              required={required}
+              hintText={placeholder}
+              disabled={disabled}
+              id={id}
+              name={name}
+              style={style}
+              errorText={errorText}
+              title={formattedNumber}
+              maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
+              floatingLabelText={floatingLabelText}
+              floatingLabelStyle={floatingLabelStyle}
+              inputStyle={inputStyle}
+              underlineFocusStyle={underlineFocusStyle}
+              floatingLabelFixed={floatingLabelFixed}
+              multiLine={multiLine}
+              hintStyle={hintStyle}
+              fullWidth
+            />
+          </div>
+          <div className={autoSelectMenuContainerStyle}>
+            <AutoselectOptions
+              options={[{ value: 1234 }, { value: 24567 }]}
+              onListItemSelect={this.handleAutoselectListSelect}
+            />
+          </div>
         </div>
       )
     }
