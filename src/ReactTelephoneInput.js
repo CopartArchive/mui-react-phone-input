@@ -153,6 +153,7 @@ class ReactTelephoneInput extends React.Component {
       {
         preferredCountries,
         showDropDown: false,
+        suggestionsOpen: false,
         queryString: '',
         freezeSelection: false,
         debouncedQueryStingSearcher: debounce(this.searchCountry, 300)
@@ -542,6 +543,9 @@ class ReactTelephoneInput extends React.Component {
       }
 
       this._fillDialCode()
+      this.setState({
+        suggestionsOpen: true
+      })
     }
     handleInput = (event) => {
       let formattedNumber = '+';
@@ -675,9 +679,7 @@ class ReactTelephoneInput extends React.Component {
       }
     }
     handleAutoselectListSelect = (selectedValue) => {
-      console.log(selectedValue, 'In handle autoselect list select')
       let formattedNumber = '+';
-
       // if the input is the same as before, must be some special key like enter etc.
       if (selectedValue === this.state.formattedNumber) {
         return
@@ -692,7 +694,7 @@ class ReactTelephoneInput extends React.Component {
       let caretPosition = this.numberInput.input.selectionStart;
       const oldFormattedText = this.state.formattedNumber;
       const diff = formattedNumber.length - oldFormattedText.length;
-      console.log(diff, 'New selected country')
+      this.numberInput.input.focus()
       const onSetStateComplete = () => {
         if (isModernBrowser) {
           if (caretPosition === 1 && formattedNumber.length === 2) {
@@ -930,6 +932,7 @@ class ReactTelephoneInput extends React.Component {
           <div className={autoSelectMenuContainerStyle}>
             <AutoselectOptions
               options={[{ value: '917981249819' }, { value: '19029325192' }]}
+              isOpen={this.state.suggestionsOpen}
               onListItemSelect={this.handleAutoselectListSelect}
             />
           </div>

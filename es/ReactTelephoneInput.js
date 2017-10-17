@@ -34,6 +34,7 @@ import { List, ListItem } from 'material-ui/List';
 import { isNumberValid, getUnformattedValue, isModernBrowser } from './utils';
 import styles from '../css/default.css';
 import flagImage from '../images/flags.png';
+import AutoselectOptions from './AutoselectOptions';
 
 var allCountries = countryData.allCountries;
 var iso2Lookup = countryData.iso2Lookup;
@@ -128,7 +129,9 @@ var propTypes = {
   underlineFocusStyle: PropTypes.shape(),
   floatingLabelFixed: PropTypes.bool,
   multiLine: PropTypes.bool,
-  hintStyle: PropTypes.shape()
+  hintStyle: PropTypes.shape(),
+  autoSelect: PropTypes.bool,
+  autoSelectOptions: PropTypes.arrayOf(PropTypes.shape())
 };
 var defaultProps = {
   autoFormat: true,
@@ -153,7 +156,9 @@ var defaultProps = {
   underlineFocusStyle: {},
   floatingLabelFixed: true,
   multiLine: false,
-  hintStyle: {}
+  hintStyle: {},
+  autoSelect: false,
+  autoSelectOptions: []
 };
 
 var ReactTelephoneInput = function (_React$Component) {
@@ -222,6 +227,9 @@ var ReactTelephoneInput = function (_React$Component) {
       }
 
       _this._fillDialCode();
+      _this.setState({
+        suggestionsOpen: true
+      });
     };
 
     _this.handleInput = function (event) {
@@ -314,6 +322,43 @@ var ReactTelephoneInput = function (_React$Component) {
       }
     };
 
+    _this.handleAutoselectListSelect = function (selectedValue) {
+      var formattedNumber = '+';
+      // if the input is the same as before, must be some special key like enter etc.
+      if (selectedValue === _this.state.formattedNumber) {
+        return;
+      }
+      var newSelectedCountry = _this.guessSelectedCountry(selectedValue.substring(0, 6));
+      formattedNumber = _this.formatNumber(selectedValue, newSelectedCountry.format);
+      var caretPosition = _this.numberInput.input.selectionStart;
+      var oldFormattedText = _this.state.formattedNumber;
+      var diff = formattedNumber.length - oldFormattedText.length;
+      _this.numberInput.input.focus();
+      var onSetStateComplete = function onSetStateComplete() {
+        if (isModernBrowser) {
+          if (caretPosition === 1 && formattedNumber.length === 2) {
+            caretPosition += 1;
+          }
+
+          if (diff > 0) {
+            caretPosition -= diff;
+          }
+
+          if (caretPosition > 0 && oldFormattedText.length >= formattedNumber.length) {
+            _this.numberInput.input.setSelectionRange(caretPosition, caretPosition);
+          }
+        }
+
+        if (_this.props.onChange) {
+          _this.props.onChange(_this.numberInput.input, _this.state.formattedNumber, _this.state.selectedCountry, getUnformattedValue(_this.state.formattedNumber));
+        }
+      };
+      _this.setState({
+        formattedNumber: formattedNumber,
+        selectedCountry: newSelectedCountry.dialCode.length > 0 ? newSelectedCountry : _this.state.selectedCountry
+      }, onSetStateComplete);
+    };
+
     _this._searchCountry = memoize(function (queryString) {
       if (!queryString || queryString.length === 0) {
         return null;
@@ -333,6 +378,7 @@ var ReactTelephoneInput = function (_React$Component) {
     _this.state = assign({}, {
       preferredCountries: preferredCountries,
       showDropDown: false,
+      suggestionsOpen: false,
       queryString: '',
       freezeSelection: false,
       debouncedQueryStingSearcher: debounce(_this.searchCountry, 300)
@@ -659,6 +705,8 @@ var ReactTelephoneInput = function (_React$Component) {
     var _props = this.props,
         id = _props.inputId,
         name = _props.name,
+        autoSelect = _props.autoSelect,
+        autoSelectOptions = _props.autoSelectOptions,
         isValid = _props.isValid,
         autoComplete = _props.autoComplete,
         placeholder = _props.placeholder,
@@ -688,7 +736,9 @@ var ReactTelephoneInput = function (_React$Component) {
         openDropdownStyle = styles['open-dropdown'],
         flagStyle = styles.flag,
         invalidNumberStyle = styles['invalid-number'],
-        selectedFlagStyle = styles['selected-flag'];
+        selectedFlagStyle = styles['selected-flag'],
+        textFieldContainerStyle = styles['phone-text-field-container'],
+        autoSelectMenuContainerStyle = styles['autoselect-menu-container'];
 
     var selectedCountryFlagStyle = styles[selectedCountry.iso2];
     var rootClasses = classNames((_classNames4 = {}, _classNames4['' + rootStyle] = true, _classNames4));
@@ -697,6 +747,7 @@ var ReactTelephoneInput = function (_React$Component) {
     var flagViewClasses = classNames((_classNames7 = {}, _classNames7['' + flagDropdownStyle] = true, _classNames7['' + openDropdownStyle] = showDropDown, _classNames7['' + hideStyle] = !flagDropDownEnabled, _classNames7));
     var inputFlagClasses = classNames((_classNames8 = {}, _classNames8['' + flagStyle] = true, _classNames8['' + selectedCountryFlagStyle] = true, _classNames8));
     var flagDropdownContainerClasses = classNames((_classNames9 = {}, _classNames9['' + selectedFlagStyle] = true, _classNames9['' + hideStyle] = !flagDropDownEnabled, _classNames9));
+
     return React.createElement(
       'div',
       {
@@ -725,37 +776,51 @@ var ReactTelephoneInput = function (_React$Component) {
         ),
         flagDropDownEnabled && showDropDown ? this.getCountryDropDownList() : ''
       ),
-      React.createElement(TextField, {
-        onChange: this.handleInput,
-        onTouchTap: this.handleInputClick,
-        onFocus: this.handleInputFocus,
-        onBlur: this.handleInputBlur,
-        onKeyDown: this.handleInputKeyDown,
-        value: formattedNumber,
-        ref: function ref(input) {
-          _this4.numberInput = input;
-        },
-        type: 'tel',
-        className: inputClasses,
-        autoComplete: autoComplete,
-        pattern: pattern,
-        required: required,
-        hintText: placeholder,
-        disabled: disabled,
-        id: id,
-        name: name,
-        style: style,
-        errorText: errorText,
-        title: formattedNumber,
-        maxLength: selectedCountry.format && selectedCountry.format.length || 50,
-        floatingLabelText: floatingLabelText,
-        floatingLabelStyle: floatingLabelStyle,
-        inputStyle: inputStyle,
-        underlineFocusStyle: underlineFocusStyle,
-        floatingLabelFixed: floatingLabelFixed,
-        multiLine: multiLine,
-        hintStyle: hintStyle
-      })
+      React.createElement(
+        'div',
+        { className: textFieldContainerStyle },
+        React.createElement(TextField, {
+          onChange: this.handleInput,
+          onTouchTap: this.handleInputClick,
+          onFocus: this.handleInputFocus,
+          onBlur: this.handleInputBlur,
+          onKeyDown: this.handleInputKeyDown,
+          value: formattedNumber,
+          ref: function ref(input) {
+            _this4.numberInput = input;
+          },
+          type: 'tel',
+          className: inputClasses,
+          autoComplete: autoComplete,
+          pattern: pattern,
+          required: required,
+          hintText: placeholder,
+          disabled: disabled,
+          id: id,
+          name: name,
+          style: style,
+          errorText: errorText,
+          title: formattedNumber,
+          maxLength: selectedCountry.format && selectedCountry.format.length || 50,
+          floatingLabelText: floatingLabelText,
+          floatingLabelStyle: floatingLabelStyle,
+          inputStyle: inputStyle,
+          underlineFocusStyle: underlineFocusStyle,
+          floatingLabelFixed: floatingLabelFixed,
+          multiLine: multiLine,
+          hintStyle: hintStyle,
+          fullWidth: true
+        })
+      ),
+      React.createElement(
+        'div',
+        { className: autoSelectMenuContainerStyle },
+        React.createElement(AutoselectOptions, {
+          options: [{ value: '917981249819' }, { value: '19029325192' }],
+          isOpen: this.state.suggestionsOpen,
+          onListItemSelect: this.handleAutoselectListSelect
+        })
+      )
     );
   };
 
