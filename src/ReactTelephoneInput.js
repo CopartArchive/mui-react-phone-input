@@ -1,9 +1,6 @@
 // TODO - fix the onlyContries props.
 // Currently expects that as an array of country object,
 // but users should be able to send in array of country isos
-
-import some from 'lodash/some';
-
 import find from 'lodash/find';
 import reduce from 'lodash/reduce';
 import map from 'lodash/map';
@@ -28,14 +25,13 @@ import countryData from 'country-telephone-data';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
+import { isNumberValid, getUnformattedValue, isModernBrowser } from './utils';
 import styles from '../css/default.css';
 import flagImage from '../images/flags.png'
 
 const allCountries = countryData.allCountries;
 const iso2Lookup = countryData.iso2Lookup;
 const allCountryCodes = countryData.allCountryCodes;
-
-const isModernBrowser = (typeof document !== 'undefined') ? Boolean(document.createElement('input').setSelectionRange) : true
 
 const keys = {
   UP: 38,
@@ -49,8 +45,8 @@ const keys = {
   Z: 90,
   SPACE: 32
 };
-const DELIMITER_REGEX = /([.?*+^$[\]\\(){}|-\s])/g
-const getUnformattedValue = formattedValue => formattedValue.replace(DELIMITER_REGEX, '')
+
+
 const getFlagStyle = (flagsImagePath = flagImage) => ({
   backgroundImage: `url(${flagsImagePath})`
 })
@@ -63,11 +59,7 @@ FlagIcon.propTypes = {
 FlagIcon.defaultProps = {
   inputFlagClasses: '',
 }
-const isNumberValid = (inputNumber) => {
-  const countries = countryData.allCountries;
-  return some(countries, country => startsWith(inputNumber, country.dialCode) ||
-    startsWith(country.dialCode, inputNumber))
-}
+
 
 const CountryText = ({ name, dialCode }) => (
   <span>

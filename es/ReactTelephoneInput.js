@@ -7,9 +7,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // TODO - fix the onlyContries props.
 // Currently expects that as an array of country object,
 // but users should be able to send in array of country isos
-
-import some from 'lodash/some';
-
 import find from 'lodash/find';
 import reduce from 'lodash/reduce';
 import map from 'lodash/map';
@@ -34,14 +31,13 @@ import countryData from 'country-telephone-data';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
+import { isNumberValid, getUnformattedValue, isModernBrowser } from './utils';
 import styles from '../css/default.css';
 import flagImage from '../images/flags.png';
 
 var allCountries = countryData.allCountries;
 var iso2Lookup = countryData.iso2Lookup;
 var allCountryCodes = countryData.allCountryCodes;
-
-var isModernBrowser = typeof document !== 'undefined' ? Boolean(document.createElement('input').setSelectionRange) : true;
 
 var keys = {
   UP: 38,
@@ -55,10 +51,7 @@ var keys = {
   Z: 90,
   SPACE: 32
 };
-var DELIMITER_REGEX = /([.?*+^$[\]\\(){}|-\s])/g;
-var getUnformattedValue = function getUnformattedValue(formattedValue) {
-  return formattedValue.replace(DELIMITER_REGEX, '');
-};
+
 var getFlagStyle = function getFlagStyle() {
   var flagsImagePath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : flagImage;
   return {
@@ -75,12 +68,6 @@ FlagIcon.propTypes = process.env.NODE_ENV !== "production" ? {
 } : {};
 FlagIcon.defaultProps = {
   inputFlagClasses: ''
-};
-var isNumberValid = function isNumberValid(inputNumber) {
-  var countries = countryData.allCountries;
-  return some(countries, function (country) {
-    return startsWith(inputNumber, country.dialCode) || startsWith(country.dialCode, inputNumber);
-  });
 };
 
 var CountryText = function CountryText(_ref2) {
