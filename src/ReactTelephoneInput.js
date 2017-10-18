@@ -908,6 +908,7 @@ class ReactTelephoneInput extends React.Component {
               value={formattedNumber}
               ref={(input) => { this.numberInput = input; }}
               type="tel"
+              autoComplete="off"
               className={inputClasses}
               pattern={pattern}
               required={required}

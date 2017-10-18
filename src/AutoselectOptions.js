@@ -30,6 +30,7 @@ class AutoselectOptions extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      displayedOption: props.options.slice(0, 50),
       selectedOption: '-1',
     }
   }
@@ -56,14 +57,15 @@ class AutoselectOptions extends React.Component {
     this.props.onListItemSelect(selectedValue)
   }
   render() {
-    const { options, isOpen } = this.props
+    const { isOpen } = this.props
+    const { displayedOption } = this.state
     if (!isOpen) {
       return null
     }
     return (
       <Paper>
-        <SelectableList value={this.state.selectedOption} onChange={this.handleRequestChange} >
-          {options.map(
+        <SelectableList value={this.state.selectedOption} onChange={this.handleRequestChange} style={{ maxHeight: '150px', overflowY: 'auto' }}>
+          {displayedOption.map(
             (option, index) => (
               (<ListItem
                 key={option.value}
