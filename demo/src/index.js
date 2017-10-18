@@ -11,16 +11,40 @@ const changeHandler = (target, formattedNumber, selectedCountry, rawValue) => {
 const Demo = () => (<div>
   <h1>React Telephone Input Demo</h1>
   <MuiThemeProvider>
-
-    <RTI
-      flagsImagePath="./images/flags.png"
-      name="phone"
-      onChange={changeHandler}
-      floatingLabelText="phone"
-      floatingLabelStyle={{ color: '#01579b' }}
-      flagDropDownEnabled={true}
-      value={''}
-    />
+    <div>
+      <h2>WIth flag dropdown</h2>
+      <RTI
+        flagsImagePath="./images/flags.png"
+        name="phone"
+        onChange={changeHandler}
+        floatingLabelText="phone"
+        floatingLabelStyle={{ color: '#01579b' }}
+        flagDropDownEnabled
+        value={''}
+      />
+      <h2>WIthout flag dropdown</h2>
+      <RTI
+        flagsImagePath="./images/flags.png"
+        name="phone"
+        onChange={changeHandler}
+        floatingLabelText="phone"
+        floatingLabelStyle={{ color: '#01579b' }}
+        flagDropDownEnabled={false}
+        value={''}
+      />
+    <h2>With autoselect and flag dropdown</h2>
+      <RTI
+        flagsImagePath="./images/flags.png"
+        name="phone"
+        onChange={changeHandler}
+        floatingLabelText="phone"
+        floatingLabelStyle={{ color: '#01579b' }}
+        flagDropDownEnabled={false}
+        autoSelect
+        autoSelectOptions={[{ value: '917981249819' }, { value: '19029325192' }]}
+        value={''}
+      />
+    </div>
   </MuiThemeProvider>
 </div>)
 
