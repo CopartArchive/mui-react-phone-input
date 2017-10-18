@@ -792,6 +792,7 @@ var ReactTelephoneInput = function (_React$Component) {
             _this4.numberInput = input;
           },
           type: 'tel',
+          autoComplete: 'off',
           className: inputClasses,
           pattern: pattern,
           required: required,

@@ -65,6 +65,7 @@ var AutoselectOptions = function (_React$Component) {
     };
 
     _this.state = {
+      displayedOption: props.options.slice(0, 50),
       selectedOption: '-1'
     };
     return _this;
@@ -79,9 +80,8 @@ var AutoselectOptions = function (_React$Component) {
   };
 
   AutoselectOptions.prototype.render = function render() {
-    var _props = this.props,
-        options = _props.options,
-        isOpen = _props.isOpen;
+    var isOpen = this.props.isOpen;
+    var displayedOption = this.state.displayedOption;
 
     if (!isOpen) {
       return null;
@@ -91,8 +91,8 @@ var AutoselectOptions = function (_React$Component) {
       null,
       React.createElement(
         SelectableList,
-        { value: this.state.selectedOption, onChange: this.handleRequestChange },
-        options.map(function (option, index) {
+        { value: this.state.selectedOption, onChange: this.handleRequestChange, style: { maxHeight: '150px', overflowY: 'auto' } },
+        displayedOption.map(function (option, index) {
           return React.createElement(ListItem, {
             key: option.value,
             primaryText: option.value,
