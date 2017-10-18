@@ -727,6 +727,8 @@ var ReactTelephoneInput = function (_React$Component) {
         formattedNumber = _state.formattedNumber,
         showDropDown = _state.showDropDown,
         selectedCountry = _state.selectedCountry;
+
+    var rawValue = getUnformattedValue(formattedNumber);
     var arrowStyle = styles.arrow,
         upStyle = styles.up,
         hideStyle = styles.hide,
@@ -791,7 +793,6 @@ var ReactTelephoneInput = function (_React$Component) {
           },
           type: 'tel',
           className: inputClasses,
-          autoComplete: autoComplete,
           pattern: pattern,
           required: required,
           hintText: placeholder,
@@ -815,8 +816,9 @@ var ReactTelephoneInput = function (_React$Component) {
       React.createElement(
         'div',
         { className: autoSelectMenuContainerStyle },
-        React.createElement(AutoselectOptions, {
-          options: [{ value: '917981249819' }, { value: '19029325192' }],
+        autoSelect && React.createElement(AutoselectOptions, {
+          searchTerm: rawValue,
+          options: autoSelectOptions,
           isOpen: this.state.suggestionsOpen,
           onListItemSelect: this.handleAutoselectListSelect
         })

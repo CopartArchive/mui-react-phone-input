@@ -835,6 +835,7 @@ class ReactTelephoneInput extends React.Component {
         hintStyle,
         required } = this.props
       const { formattedNumber, showDropDown, selectedCountry } = this.state
+      const rawValue = getUnformattedValue(formattedNumber)
       const {
         arrow: arrowStyle,
         up: upStyle,
@@ -908,7 +909,6 @@ class ReactTelephoneInput extends React.Component {
               ref={(input) => { this.numberInput = input; }}
               type="tel"
               className={inputClasses}
-              autoComplete={autoComplete}
               pattern={pattern}
               required={required}
               hintText={placeholder}
@@ -930,11 +930,15 @@ class ReactTelephoneInput extends React.Component {
             />
           </div>
           <div className={autoSelectMenuContainerStyle}>
-            <AutoselectOptions
-              options={[{ value: '917981249819' }, { value: '19029325192' }]}
-              isOpen={this.state.suggestionsOpen}
-              onListItemSelect={this.handleAutoselectListSelect}
-            />
+            {
+              autoSelect && (<AutoselectOptions
+                searchTerm={rawValue}
+                options={autoSelectOptions}
+                isOpen={this.state.suggestionsOpen}
+                onListItemSelect={this.handleAutoselectListSelect}
+              />)
+            }
+
           </div>
         </div>
       )
