@@ -330,6 +330,7 @@ var ReactTelephoneInput = function (_React$Component) {
       }
       var newSelectedCountry = _this.guessSelectedCountry(selectedValue.substring(0, 6));
       formattedNumber = _this.formatNumber(selectedValue, newSelectedCountry.format);
+      console.log(_this.numberInput, 'numberinput');
       var caretPosition = _this.numberInput.input.selectionStart;
       var oldFormattedText = _this.state.formattedNumber;
       var diff = formattedNumber.length - oldFormattedText.length;

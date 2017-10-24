@@ -1,3 +1,5 @@
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -7,9 +9,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
-import { List, ListItem, MakeSelectable } from 'material-ui/List';
+import { AutoSizer, List as VirtualList } from 'react-virtualized';
+import { ListItem } from 'material-ui/List';
 
-var SelectableList = MakeSelectable(List);
+var OPTIONS_ROW_HEIGHT = 50;
+var optionStyleProps = {
+  rowHeight: 72,
+  optionsMinHeight: 200
+};
 var propTypes = {
   options: PropTypes.arrayOf(PropTypes.shape()),
   isOpen: PropTypes.bool.isRequired,
@@ -49,24 +56,21 @@ var AutoselectOptions = function (_React$Component) {
       var options = _this.props.options;
 
       var foundIndex = options.findIndex(function (option) {
-        return newSearchTerm && option && option.value.indexOf(newSearchTerm) !== -1;
+        return newSearchTerm && option && option.value.startsWith(newSearchTerm);
       });
       _this.setState({
         selectedOption: foundIndex
       });
     };
 
-    _this.handleRequestChange = function (evt, index) {
-      _this.setState({
-        selectedOption: index
-      });
-      var selectedValue = _this.props.options[index].value;
-      _this.props.onListItemSelect(selectedValue);
+    _this.handleListItemTouchTap = function (option) {
+      return function () {
+        _this.props.onListItemSelect(option.value);
+      };
     };
 
     _this.state = {
-      displayedOption: props.options.slice(0, 50),
-      selectedOption: '-1'
+      selectedOption: null
     };
     return _this;
   }
@@ -80,8 +84,14 @@ var AutoselectOptions = function (_React$Component) {
   };
 
   AutoselectOptions.prototype.render = function render() {
-    var isOpen = this.props.isOpen;
-    var displayedOption = this.state.displayedOption;
+    var _this2 = this;
+
+    var _props = this.props,
+        isOpen = _props.isOpen,
+        options = _props.options;
+    var optionsStyleWidth = optionStyleProps.width,
+        optionStyleRowHeight = optionStyleProps.rowHeight,
+        optionStyleMinHeight = optionStyleProps.optionsMinHeight;
 
     if (!isOpen) {
       return null;
@@ -89,17 +99,28 @@ var AutoselectOptions = function (_React$Component) {
     return React.createElement(
       Paper,
       null,
-      React.createElement(
-        SelectableList,
-        { value: this.state.selectedOption, onChange: this.handleRequestChange, style: { maxHeight: '150px', overflowY: 'auto' } },
-        displayedOption.map(function (option, index) {
+      React.createElement(VirtualList, {
+        name: name,
+        scrollToIndex: this.state.selectedOption,
+        width: Math.max(optionsStyleWidth || 200, 190),
+        height: Math.min(options.length * optionStyleRowHeight, optionStyleMinHeight),
+        rowCount: options.length,
+        rowHeight: optionStyleProps.rowHeight || OPTIONS_ROW_HEIGHT,
+        className: styles.options,
+        tabIndex: -1,
+        rowRenderer: function rowRenderer(_ref2) {
+          var i = _ref2.index,
+              key = _ref2.key,
+              style = _ref2.style;
           return React.createElement(ListItem, {
-            key: option.value,
-            primaryText: option.value,
-            value: index
+            key: key,
+            primaryText: options[i].value,
+            value: i,
+            innerDivStyle: i === _this2.state.selectedOption ? styles.highlightedItem : {},
+            onClick: _this2.handleListItemTouchTap(options[i])
           });
-        })
-      )
+        }
+      })
     );
   };
 
@@ -108,4 +129,15 @@ var AutoselectOptions = function (_React$Component) {
 
 AutoselectOptions.propTypes = process.env.NODE_ENV !== "production" ? propTypes : {};
 AutoselectOptions.defaultProps = defaultProps;
-export default AutoselectOptions;
+
+var AutoSizedAutoSelectOptions = function AutoSizedAutoSelectOptions(props) {
+  return React.createElement(
+    AutoSizer,
+    null,
+    function (_ref3) {
+      var width = _ref3.width;
+      return React.createElement(AutoselectOptions, _extends({}, props, { width: width }));
+    }
+  );
+};
+export default AutoSizedAutoSelectOptions;

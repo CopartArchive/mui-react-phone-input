@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
-import { List, ListItem, MakeSelectable } from 'material-ui/List';
+import { AutoSizer, List as VirtualList } from 'react-virtualized'
+import { ListItem } from 'material-ui/List';
 
-const SelectableList = MakeSelectable(List);
+const OPTIONS_ROW_HEIGHT = 50
+const optionStyleProps = {
+  rowHeight: 72,
+  optionsMinHeight: 200,
+}
 const propTypes = {
   options: PropTypes.arrayOf(PropTypes.shape()),
   isOpen: PropTypes.bool.isRequired,
@@ -30,8 +35,7 @@ class AutoselectOptions extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      displayedOption: props.options.slice(0, 50),
-      selectedOption: '-1',
+      selectedOption: null,
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -44,39 +48,51 @@ class AutoselectOptions extends React.Component {
   updateHighlightedItem = (newSearchTerm) => {
     const { options } = this.props
     const foundIndex = options.findIndex(
-      option => newSearchTerm && option && option.value.indexOf(newSearchTerm) !== -1)
+      option => newSearchTerm && option && option.value.startsWith(newSearchTerm))
     this.setState({
       selectedOption: foundIndex,
     })
   }
-  handleRequestChange = (evt, index) => {
-    this.setState({
-      selectedOption: index
-    })
-    const selectedValue = this.props.options[index].value
-    this.props.onListItemSelect(selectedValue)
+  handleListItemTouchTap = option => () => {
+    this.props.onListItemSelect(option.value)
   }
   render() {
-    const { isOpen } = this.props
-    const { displayedOption } = this.state
+    const { isOpen, options } = this.props
+    const { width: optionsStyleWidth,
+      rowHeight: optionStyleRowHeight,
+      optionsMinHeight: optionStyleMinHeight } = optionStyleProps
     if (!isOpen) {
       return null
     }
     return (
       <Paper>
-        <SelectableList value={this.state.selectedOption} onChange={this.handleRequestChange} style={{ maxHeight: '150px', overflowY: 'auto' }}>
-          {displayedOption.map(
-            (option, index) => (
-              (<ListItem
-                key={option.value}
-                primaryText={option.value}
-                value={index}
-              />)
-            ))}
-        </SelectableList>
+        <VirtualList
+          name={name}
+          scrollToIndex={this.state.selectedOption}
+          width={Math.max((optionsStyleWidth || 200), 190)}
+          height={Math.min(options.length * optionStyleRowHeight, optionStyleMinHeight)}
+          rowCount={options.length}
+          rowHeight={optionStyleProps.rowHeight || OPTIONS_ROW_HEIGHT}
+          className={styles.options}
+          tabIndex={-1}
+          rowRenderer={({ index: i, key, style }) => (
+            <ListItem
+              key={key}
+              primaryText={options[i].value}
+              value={i}
+              innerDivStyle={i === this.state.selectedOption ? styles.highlightedItem : {}}
+              onClick={this.handleListItemTouchTap(options[i])}
+            />)}
+        />
       </Paper>)
   }
 }
 AutoselectOptions.propTypes = propTypes
 AutoselectOptions.defaultProps = defaultProps
-export default AutoselectOptions
+
+const AutoSizedAutoSelectOptions = props => (
+  <AutoSizer>
+    {({ width }) => <AutoselectOptions {...props} width={width} />}
+  </AutoSizer>
+)
+export default AutoSizedAutoSelectOptions
