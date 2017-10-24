@@ -691,6 +691,7 @@ class ReactTelephoneInput extends React.Component {
         selectedValue,
         newSelectedCountry.format
       )
+      console.log(this.numberInput, 'numberinput')
       let caretPosition = this.numberInput.input.selectionStart;
       const oldFormattedText = this.state.formattedNumber;
       const diff = formattedNumber.length - oldFormattedText.length;
