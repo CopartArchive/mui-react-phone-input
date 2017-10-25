@@ -84,7 +84,7 @@ class AutoselectOptions extends React.Component {
           rowHeight={20}
           tabIndex={-1}
           rowRenderer={({ index: i, key, style }) => (
-          <div style={{height:'20px'}}>{options[i].value}</div>)}
+          <div key={key} style={{height:'20px'}}>{options[i].value}</div>)}
         />)
   }
 }
