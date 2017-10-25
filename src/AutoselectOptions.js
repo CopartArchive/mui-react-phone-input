@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
+import 'react-virtualized/styles.css';
 import { AutoSizer, List as VirtualList } from 'react-virtualized'
 import { ListItem } from 'material-ui/List';
 
+
 const OPTIONS_ROW_HEIGHT = 50
 const optionStyleProps = {
-  rowHeight: 72,
-  optionsMinHeight: 200,
+  rowHeight: 20,
+  optionsMinHeight: 400,
 }
 const propTypes = {
   options: PropTypes.arrayOf(PropTypes.shape()),
@@ -51,6 +53,11 @@ class AutoselectOptions extends React.Component {
       option => newSearchTerm && option && option.value.startsWith(newSearchTerm))
     this.setState({
       selectedOption: foundIndex,
+    }, () => {
+      if (this.virtualList) {
+        console.log(this.virtualList.scrollToRow)
+        this.virtualList.scrollToRow(foundIndex)
+      }
     })
   }
   handleListItemTouchTap = option => () => {
@@ -64,34 +71,28 @@ class AutoselectOptions extends React.Component {
     if (!isOpen) {
       return null
     }
+    console.log(this.props.height, 'Selected option')
     return (
-      <Paper>
         <VirtualList
           name={name}
+          ref={(elem) =>this.virtualList =elem}
           scrollToIndex={this.state.selectedOption}
-          width={Math.max((optionsStyleWidth || 200), 190)}
-          height={Math.min(options.length * optionStyleRowHeight, optionStyleMinHeight)}
-          rowCount={options.length}
-          rowHeight={optionStyleProps.rowHeight || OPTIONS_ROW_HEIGHT}
-          className={styles.options}
+          overscanRowCount={30}
+          width={183}
+          height={100}
+          rowCount={500}
+          rowHeight={20}
           tabIndex={-1}
           rowRenderer={({ index: i, key, style }) => (
-            <ListItem
-              key={key}
-              primaryText={options[i].value}
-              value={i}
-              innerDivStyle={i === this.state.selectedOption ? styles.highlightedItem : {}}
-              onClick={this.handleListItemTouchTap(options[i])}
-            />)}
-        />
-      </Paper>)
+          <div style={{height:'20px'}}>{options[i].value}</div>)}
+        />)
   }
 }
 AutoselectOptions.propTypes = propTypes
 AutoselectOptions.defaultProps = defaultProps
 
 const AutoSizedAutoSelectOptions = props => (
-  <AutoSizer>
+  <AutoSizer disableHeight>
     {({ width }) => <AutoselectOptions {...props} width={width} />}
   </AutoSizer>
 )

@@ -671,6 +671,7 @@ class ReactTelephoneInput extends React.Component {
       )
     }
     handleInputBlur = () => {
+
       if (typeof this.props.onBlur === 'function') {
         this.props.onBlur(
           this.state.formattedNumber,
