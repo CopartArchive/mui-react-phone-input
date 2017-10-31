@@ -27,7 +27,8 @@ import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import { isNumberValid, getUnformattedValue, isModernBrowser } from './utils';
 import styles from '../css/default.css';
-import flagImage from '../images/flags.png'
+import flagImage from '../images/flags.png';
+import AutoselectOptions from './AutoselectOptions';
 
 const allCountries = countryData.allCountries;
 const iso2Lookup = countryData.iso2Lookup;
@@ -113,6 +114,8 @@ const propTypes = {
   floatingLabelFixed: PropTypes.bool,
   multiLine: PropTypes.bool,
   hintStyle: PropTypes.shape(),
+  autoSelect: PropTypes.bool,
+  autoSelectOptions: PropTypes.arrayOf(PropTypes.shape())
 }
 const defaultProps = {
   autoFormat: true,
@@ -138,6 +141,8 @@ const defaultProps = {
   floatingLabelFixed: true,
   multiLine: false,
   hintStyle: {},
+  autoSelect: false,
+  autoSelectOptions: [],
 }
 class ReactTelephoneInput extends React.Component {
   constructor(props) {
@@ -150,6 +155,7 @@ class ReactTelephoneInput extends React.Component {
       {
         preferredCountries,
         showDropDown: false,
+        suggestionsOpen: false,
         queryString: '',
         freezeSelection: false,
         debouncedQueryStingSearcher: debounce(this.searchCountry, 300)
@@ -680,7 +686,64 @@ class ReactTelephoneInput extends React.Component {
         )
       }
     }
+    handleAutoselectListSelect = (selectedValue) => {
+      let formattedNumber = '+';
+      // if the input is the same as before, must be some special key like enter etc.
+      if (selectedValue === this.state.formattedNumber) {
+        return
+      }
+      const newSelectedCountry = this.guessSelectedCountry(
+        selectedValue.substring(0, 6)
+      )
+      formattedNumber = this.formatNumber(
+        selectedValue,
+        newSelectedCountry.format
+      )
+      console.log(this.numberInput, 'numberinput')
+      let caretPosition = this.numberInput.input.selectionStart;
+      const oldFormattedText = this.state.formattedNumber;
+      const diff = formattedNumber.length - oldFormattedText.length;
+      this.numberInput.input.focus()
+      const onSetStateComplete = () => {
+        if (isModernBrowser) {
+          if (caretPosition === 1 && formattedNumber.length === 2) {
+            caretPosition += 1
+          }
 
+          if (diff > 0) {
+            caretPosition -= diff
+          }
+
+          if (
+            caretPosition > 0 &&
+                      oldFormattedText.length >= formattedNumber.length
+          ) {
+            this.numberInput.input.setSelectionRange(
+              caretPosition,
+              caretPosition
+            )
+          }
+        }
+
+        if (this.props.onChange) {
+          this.props.onChange(
+            this.numberInput.input,
+            this.state.formattedNumber,
+            this.state.selectedCountry,
+            getUnformattedValue(this.state.formattedNumber)
+          )
+        }
+      }
+      this.setState(
+        {
+          formattedNumber,
+          selectedCountry:
+          newSelectedCountry.dialCode.length > 0
+            ? newSelectedCountry : this.state.selectedCountry
+        },
+        onSetStateComplete
+      )
+    }
     _mapPropsToState(props, firstCall = false) {
       let inputNumber
 
@@ -762,6 +825,8 @@ class ReactTelephoneInput extends React.Component {
     render() {
       const { inputId: id,
         name,
+        autoSelect,
+        autoSelectOptions,
         isValid,
         autoComplete,
         placeholder,
@@ -779,17 +844,20 @@ class ReactTelephoneInput extends React.Component {
         hintStyle,
         required } = this.props
       const { formattedNumber, showDropDown, selectedCountry } = this.state
+      const rawValue = getUnformattedValue(formattedNumber)
       const {
         arrow: arrowStyle,
         up: upStyle,
-        hide:hideStyle,
+        hide: hideStyle,
         'react-tel-input': rootStyle,
         'form-control': formControlStyle,
         'flag-dropdown': flagDropdownStyle,
         'open-dropdown': openDropdownStyle,
         flag: flagStyle,
         'invalid-number': invalidNumberStyle,
-        'selected-flag': selectedFlagStyle
+        'selected-flag': selectedFlagStyle,
+        'phone-text-field-container': textFieldContainerStyle,
+        'autoselect-menu-container': autoSelectMenuContainerStyle,
       } = styles
       const selectedCountryFlagStyle = styles[selectedCountry.iso2]
       const rootClasses = classNames({
@@ -817,6 +885,7 @@ class ReactTelephoneInput extends React.Component {
         [`${selectedFlagStyle}`]:true,
         [`${hideStyle}`]: !flagDropDownEnabled,
       })
+
       return (
         <div
           className={rootClasses}
@@ -838,36 +907,49 @@ class ReactTelephoneInput extends React.Component {
             </div>
             {flagDropDownEnabled && showDropDown ? this.getCountryDropDownList() : ''}
           </div>
-          <TextField
-            onChange={this.handleInput}
-            onTouchTap={this.handleInputClick}
-            onFocus={this.handleInputFocus}
-            onBlur={this.handleInputBlur}
-            onKeyDown={this.handleInputKeyDown}
-            value={formattedNumber}
-            ref={(input) => { this.numberInput = input; }}
-            type="tel"
-            className={inputClasses}
-            autoComplete={autoComplete}
-            pattern={pattern}
-            required={required}
-            hintText={placeholder}
-            disabled={disabled}
-            id={id}
-            name={name}
-            style={style}
-            errorText={errorText}
-            title={formattedNumber}
-            maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
-            floatingLabelText={floatingLabelText}
-            floatingLabelStyle={floatingLabelStyle}
-            inputStyle={inputStyle}
-            underlineFocusStyle={underlineFocusStyle}
-            floatingLabelFixed={floatingLabelFixed}
-            multiLine={multiLine}
-            hintStyle={hintStyle}
-          />
+          <div className={textFieldContainerStyle}>
+            <TextField
+              onChange={this.handleInput}
+              onTouchTap={this.handleInputClick}
+              onFocus={this.handleInputFocus}
+              onBlur={this.handleInputBlur}
+              onKeyDown={this.handleInputKeyDown}
+              value={formattedNumber}
+              ref={(input) => { this.numberInput = input; }}
+              type="tel"
+              autoComplete="off"
+              className={inputClasses}
+              pattern={pattern}
+              required={required}
+              hintText={placeholder}
+              disabled={disabled}
+              id={id}
+              name={name}
+              style={style}
+              errorText={errorText}
+              title={formattedNumber}
+              maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
+              floatingLabelText={floatingLabelText}
+              floatingLabelStyle={floatingLabelStyle}
+              inputStyle={inputStyle}
+              underlineFocusStyle={underlineFocusStyle}
+              floatingLabelFixed={floatingLabelFixed}
+              multiLine={multiLine}
+              hintStyle={hintStyle}
+              fullWidth
+            />
+          </div>
+          <div className={autoSelectMenuContainerStyle}>
+            {
+              autoSelect && (<AutoselectOptions
+                searchTerm={rawValue}
+                options={autoSelectOptions}
+                isOpen={this.state.suggestionsOpen}
+                onListItemSelect={this.handleAutoselectListSelect}
+              />)
+            }
 
+          </div>
         </div>
       )
     }

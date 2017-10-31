@@ -1,7 +1,8 @@
 
 .react-tel-input {
     display: flex;
-    width: 100%;
+    width: 250px;
+    flex-wrap: wrap;
     align-items: center;
     @import 'countries';
     * {
@@ -13,6 +14,9 @@
     }
     .v-hide {
         visibility: hidden;
+    }
+    .phone-text-field-container{
+      flex: 0 1 80%;
     }
     input[type=text],
     input[type=tel] {
@@ -38,6 +42,7 @@
             background: #fff;
             border-bottom: 0;
             border-radius: 3px 0 0 0;
+            position:relative;
             .selected-flag {
                 background: #fff;
                 border-radius: 3px 0 0 0;
@@ -95,7 +100,8 @@
         max-height: 200px;
         overflow-y: scroll;
         border-radius: 0 0 3px 3px;
-        top: 26px;
+        position: absolute;
+        top: 46px;
         .country {
             padding: 5px 10px;
             .dial-code {
@@ -118,5 +124,8 @@
         .country-name {
             margin-right: 6px;
         }
+    }
+    .autoselect-menu-container{
+      flex: 0 1 100%;
     }
 }
