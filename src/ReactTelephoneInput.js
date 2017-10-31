@@ -96,7 +96,9 @@ const propTypes = {
   onChange: PropTypes.func,
   onEnterKeyPress: PropTypes.func,
   onBlur: PropTypes.func,
+  onKeyDown: PropTypes.func,
   onFocus: PropTypes.func,
+  onClick: PropTypes.func,
   disabled: PropTypes.bool,
   pattern: PropTypes.string,
   required: PropTypes.bool,
@@ -477,8 +479,12 @@ class ReactTelephoneInput extends React.Component {
     }
 
     handleInputKeyDown(event) {
+      const { onEnterKeyPress, onKeyDown } = this.props
       if (event.which === keys.ENTER) {
-        this.props.onEnterKeyPress(event)
+        onEnterKeyPress(event)
+      }
+      if (typeof onKeyDown === 'function') {
+        onKeyDown(event)
       }
     }
     handleClickOutside() {
@@ -532,7 +538,7 @@ class ReactTelephoneInput extends React.Component {
       }
     }
     handleInputFocus =() => {
-      const { onFocus } = this.props
+      const { onFocus, onClick } = this.props
       const { formattedNumber, selectedCountry } = this.state
       // trigger parent component's onFocus handler
       if (typeof onFocus === 'function') {
@@ -541,11 +547,13 @@ class ReactTelephoneInput extends React.Component {
           selectedCountry
         )
       }
-
       this._fillDialCode()
-      this.setState({
-        suggestionsOpen: true
-      })
+      if (typeof onClick === 'function') {
+        onClick(
+          formattedNumber,
+          selectedCountry
+        )
+      }
     }
     handleInput = (event) => {
       let formattedNumber = '+';
