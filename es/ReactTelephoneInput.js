@@ -114,7 +114,9 @@ var propTypes = {
   onChange: PropTypes.func,
   onEnterKeyPress: PropTypes.func,
   onBlur: PropTypes.func,
+  onKeyDown: PropTypes.func,
   onFocus: PropTypes.func,
+  onClick: PropTypes.func,
   disabled: PropTypes.bool,
   pattern: PropTypes.string,
   required: PropTypes.bool,
@@ -216,7 +218,9 @@ var ReactTelephoneInput = function (_React$Component) {
     };
 
     _this.handleInputFocus = function () {
-      var onFocus = _this.props.onFocus;
+      var _this$props = _this.props,
+          onFocus = _this$props.onFocus,
+          onClick = _this$props.onClick;
       var _this$state = _this.state,
           formattedNumber = _this$state.formattedNumber,
           selectedCountry = _this$state.selectedCountry;
@@ -225,11 +229,10 @@ var ReactTelephoneInput = function (_React$Component) {
       if (typeof onFocus === 'function') {
         onFocus(formattedNumber, selectedCountry);
       }
-
       _this._fillDialCode();
-      _this.setState({
-        suggestionsOpen: true
-      });
+      if (typeof onClick === 'function') {
+        onClick(formattedNumber, selectedCountry);
+      }
     };
 
     _this.handleInput = function (event) {
@@ -604,8 +607,15 @@ var ReactTelephoneInput = function (_React$Component) {
   };
 
   ReactTelephoneInput.prototype.handleInputKeyDown = function handleInputKeyDown(event) {
+    var _props = this.props,
+        onEnterKeyPress = _props.onEnterKeyPress,
+        onKeyDown = _props.onKeyDown;
+
     if (event.which === keys.ENTER) {
-      this.props.onEnterKeyPress(event);
+      onEnterKeyPress(event);
+    }
+    if (typeof onKeyDown === 'function') {
+      onKeyDown(event);
     }
   };
 
@@ -703,27 +713,27 @@ var ReactTelephoneInput = function (_React$Component) {
         _classNames9,
         _this4 = this;
 
-    var _props = this.props,
-        id = _props.inputId,
-        name = _props.name,
-        autoSelect = _props.autoSelect,
-        autoSelectOptions = _props.autoSelectOptions,
-        isValid = _props.isValid,
-        autoComplete = _props.autoComplete,
-        placeholder = _props.placeholder,
-        pattern = _props.pattern,
-        disabled = _props.disabled,
-        flagDropDownEnabled = _props.flagDropDownEnabled,
-        style = _props.style,
-        errorText = _props.errorText,
-        floatingLabelText = _props.floatingLabelText,
-        floatingLabelStyle = _props.floatingLabelStyle,
-        inputStyle = _props.inputStyle,
-        underlineFocusStyle = _props.underlineFocusStyle,
-        floatingLabelFixed = _props.floatingLabelFixed,
-        multiLine = _props.multiLine,
-        hintStyle = _props.hintStyle,
-        required = _props.required;
+    var _props2 = this.props,
+        id = _props2.inputId,
+        name = _props2.name,
+        autoSelect = _props2.autoSelect,
+        autoSelectOptions = _props2.autoSelectOptions,
+        isValid = _props2.isValid,
+        autoComplete = _props2.autoComplete,
+        placeholder = _props2.placeholder,
+        pattern = _props2.pattern,
+        disabled = _props2.disabled,
+        flagDropDownEnabled = _props2.flagDropDownEnabled,
+        style = _props2.style,
+        errorText = _props2.errorText,
+        floatingLabelText = _props2.floatingLabelText,
+        floatingLabelStyle = _props2.floatingLabelStyle,
+        inputStyle = _props2.inputStyle,
+        underlineFocusStyle = _props2.underlineFocusStyle,
+        floatingLabelFixed = _props2.floatingLabelFixed,
+        multiLine = _props2.multiLine,
+        hintStyle = _props2.hintStyle,
+        required = _props2.required;
     var _state = this.state,
         formattedNumber = _state.formattedNumber,
         showDropDown = _state.showDropDown,
