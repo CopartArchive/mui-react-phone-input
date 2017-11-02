@@ -760,10 +760,8 @@ class ReactTelephoneInput extends React.Component {
             this.state.formattedNumber &&
             this.state.formattedNumber.length > 0
       ) {
-        console.log('In last else if')
         inputNumber = this.state.formattedNumber
       } else {
-        console.log('In else')
         inputNumber = ''
       }
 
