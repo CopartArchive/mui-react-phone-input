@@ -1,7 +1,7 @@
 {
-  "name": "react-telephone-input",
-  "version": "4.2.14",
-  "description": "React component for entering and validating international telephone numbers",
+  "name": "mui-react-phone-input",
+  "version": "0.0.1",
+  "description": "MUI and React component for entering and validating international telephone numbers",
   "main": "lib/ReactTelephoneInput.js",
   "modules": "es/ReactTelephoneInput.js",
   "files": [
@@ -28,20 +28,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mukeshsoni/react-telephone-input"
+    "url": "https://github.com/copartit/mui-react-phone-input"
   },
   "keywords": [
     "react-component",
     "react-telephone-input",
     "international-telephone-input",
-    "react"
+    "react",
+    "mui-react-phone-input"
   ],
-  "author": "Mukesh Soni",
+  "author": "shobhit657@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mukeshsoni/react-telephone-input/issues"
+    "url": "https://github.com/copartit/mui-react-phone-input/issues"
   },
-  "homepage": "https://github.com/mukeshsoni/react-telephone-input",
+  "homepage": "https://github.com/copartit/mui-react-phone-input",
   "devDependencies": {
     "babel-eslint": "^8.0.1",
     "babel-jest": "20.0.3",

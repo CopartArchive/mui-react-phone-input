@@ -1,16 +1,16 @@
 # React Material Telephone Input
 
-This is a fork of [mukeshsoni's react-telephone-input plugin](https://github.com/mukeshsoni/react-telephone-input) built on [Material UI](http://material-ui.com) components v0.15.4
+This is a fork of [mukeshsoni's mui-react-phone-input plugin](https://github.com/mukeshsoni/mui-react-phone-input) built on [Material UI](http://material-ui.com) components v0.15.4
 
 ## Getting Started
 
 **Using npm**
 ```
-npm install rahulravindrancopart/react-telephone-input
+npm install mui-react-phone-input
 ```
 **Using yarn**
 ```
-yarn add rahulravindrancopart/react-telephone-input
+yarn add mui-react-phone-input
 ```
 
 Use in code thus
@@ -18,7 +18,7 @@ Use in code thus
 
 import React from 'react'
 import { render } from 'react-dom'
-import ReactTelInput from 'react-telephone-input';
+import ReactTelInput from 'mui-react-phone-input';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -65,7 +65,7 @@ Requires following as peerDependencies
 Clone the repository
 
 ```
-git clone https://github.com/rahulravindrancopart/react-telephone-input.git
+git clone https://github.com/rahulravindrancopart/mui-react-phone-input.git
 ```
 
 Run npm install
@@ -118,7 +118,7 @@ yarn run lint
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/rahulravindrancopart/react-telephone-input/releases).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/rahulravindrancopart/mui-react-phone-input/releases).
 
 
 ## License
