@@ -65,7 +65,7 @@ Requires following as peerDependencies
 Clone the repository
 
 ```
-git clone https://github.com/rahulravindrancopart/mui-react-phone-input.git
+git clone https://github.com/copartit/mui-react-phone-input
 ```
 
 Run npm install
@@ -118,7 +118,7 @@ yarn run lint
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/rahulravindrancopart/mui-react-phone-input/releases).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/copartit/mui-react-phone-input/releases).
 
 
 ## License
