@@ -701,7 +701,6 @@ class ReactTelephoneInput extends React.Component {
         selectedValue,
         newSelectedCountry.format
       )
-      console.log(this.numberInput, 'numberinput')
       let caretPosition = this.numberInput.input.selectionStart;
       const oldFormattedText = this.state.formattedNumber;
       const diff = formattedNumber.length - oldFormattedText.length;
@@ -787,9 +786,15 @@ class ReactTelephoneInput extends React.Component {
     _fillDialCode() {
       // if the input is blank, insert dial code of the selected country
       if (this.numberInput.input.value === '+') {
-        this.setState({
-          formattedNumber: `+${this.state.selectedCountry.dialCode}`
-        })
+        if (this.props.disabled) {
+          this.setState({
+            formattedNumber: ''
+          })
+        } else {
+          this.setState({
+            formattedNumber: `+${this.state.selectedCountry.dialCode}`
+          })
+        }
       }
     }
 
@@ -830,7 +835,6 @@ class ReactTelephoneInput extends React.Component {
         autoSelect,
         autoSelectOptions,
         isValid,
-        autoComplete,
         placeholder,
         pattern,
         disabled,
@@ -884,7 +888,7 @@ class ReactTelephoneInput extends React.Component {
         [`${selectedCountryFlagStyle}`]: true
       })
       const flagDropdownContainerClasses = classNames({
-        [`${selectedFlagStyle}`]:true,
+        [`${selectedFlagStyle}`]: true,
         [`${hideStyle}`]: !flagDropDownEnabled,
       })
 
@@ -923,7 +927,7 @@ class ReactTelephoneInput extends React.Component {
               className={inputClasses}
               pattern={pattern}
               required={required}
-              hintText={placeholder}
+              hintText={!disabled && placeholder}
               disabled={disabled}
               id={id}
               name={name}
