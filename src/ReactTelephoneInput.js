@@ -699,7 +699,6 @@ class ReactTelephoneInput extends React.Component {
         selectedValue,
         newSelectedCountry.format
       )
-      console.log(this.numberInput, 'numberinput')
       let caretPosition = this.numberInput.input.selectionStart;
       const oldFormattedText = this.state.formattedNumber;
       const diff = formattedNumber.length - oldFormattedText.length;
@@ -759,8 +758,10 @@ class ReactTelephoneInput extends React.Component {
             this.state.formattedNumber &&
             this.state.formattedNumber.length > 0
       ) {
+        console.log('In last else if')
         inputNumber = this.state.formattedNumber
       } else {
+        console.log('In else')
         inputNumber = ''
       }
 
@@ -771,10 +772,10 @@ class ReactTelephoneInput extends React.Component {
         allCountries,
         selectedCountryGuess
       )
-      const formattedNumber = this.formatNumber(
+      const formattedNumber = props.disabled && !inputNumber? this.formatNumber(
         inputNumber.replace(/\D/g, ''),
         selectedCountryGuess ? selectedCountryGuess.format : null
-      )
+      ) : ''
 
       return {
         selectedCountry: selectedCountryGuess,
@@ -828,7 +829,6 @@ class ReactTelephoneInput extends React.Component {
         autoSelect,
         autoSelectOptions,
         isValid,
-        autoComplete,
         placeholder,
         pattern,
         disabled,
@@ -882,7 +882,7 @@ class ReactTelephoneInput extends React.Component {
         [`${selectedCountryFlagStyle}`]: true
       })
       const flagDropdownContainerClasses = classNames({
-        [`${selectedFlagStyle}`]:true,
+        [`${selectedFlagStyle}`]: true,
         [`${hideStyle}`]: !flagDropDownEnabled,
       })
 
