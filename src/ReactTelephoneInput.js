@@ -478,10 +478,12 @@ class ReactTelephoneInput extends React.Component {
       }
     }
 
-    handleInputKeyDown(event) {
+    handleInputKeyDown =(event) => {
       const { onEnterKeyPress, onKeyDown } = this.props
       if (event.which === keys.ENTER) {
-        onEnterKeyPress(event)
+        if (typeof onEnterKeyPress === 'function') {
+          onEnterKeyPress(event)
+        }
       }
       if (typeof onKeyDown === 'function') {
         onKeyDown(event)
