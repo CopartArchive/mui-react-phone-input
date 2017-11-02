@@ -1,44 +1,136 @@
-Reactjs Component for International Telephone Input
-===================================================
+# React Material Telephone Input
 
-*IMP*: From 3.*, the styles won't be included by default. Can use `require('react-telephone-input/lib/withStyles')` to get the styles.
+This is a fork of [mukeshsoni's react-telephone-input plugin](https://github.com/mukeshsoni/react-telephone-input) built on [Material UI](http://material-ui.com) components v0.15.4
 
-Inspired from the awesome jquery plugin for <a href="https://github.com/Bluefieldscom/intl-tel-input" target="_blank">International Telephone Input</a>.
+## Getting Started
 
-This one is written as a [reactjs](http://facebook.github.io/react/) component.
-
-Live Demo here - [http://unstack.in/react-telephone-input/](http://unstack.in/react-telephone-input/)
-
-![How it looks](/images/react-telephone-number-screenshot.png?raw=true "How it looks")
-
-```js
-function handleInputChange(telNumber, selectedCountry) {
-    console.log('input changed. number: ', telNumber, 'selected country: ', selectedCountry);
-}
-
-// Use declaratively within another react components render method
-var ReactTelInput = require('react-telephone-input');
-// var ReactTelInput = require('react-telephone-input/lib/withStyles'), if you need the styles
-
-<MyAwesomeReactComponent>
-  <ReactTelInput
-        defaultCountry="in"
-        flagsImagePath='/path/to/images/flags.png'
-        onChange={handleInputChange}
-        onBlur={handleInputBlur}
-        />
-</MyAwesomeReactComponent>
-
-// or render standalone
-var ReactTelInput = require('react-telephone-input');
-React.render(<ReactTelInput
-                defaultCountry="in"
-                flagsImagePath='/path/to/images/flags.png'
-                onChange={handleInputChange}/>
-                onBlur={handleInputBlur}
-                document.getElementById('my-container'));
+**Using npm**
+```
+npm install rahulravindrancopart/react-telephone-input
+```
+**Using yarn**
+```
+yarn add rahulravindrancopart/react-telephone-input
 ```
 
+Use in code thus
+```js
+
+import React from 'react'
+import { render } from 'react-dom'
+import ReactTelInput from 'react-telephone-input';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+injectTapEventPlugin();
+
+const changeHandler = (target, formattedNumber, selectedCountry, rawValue) => {
+  console.log(`${formattedNumber} - ${rawValue}`, 'Formatted value and raw value')
+}
+const Demo = () =>(<div>
+<MuiThemeProvider>
+<div>
+<RTI
+  flagsImagePath="./images/flags.png"
+  name="phone"
+  onChange={changeHandler}
+  floatingLabelText="phone"
+  floatingLabelStyle={{ color: '#01579b' }}
+  flagDropDownEnabled
+  value={''}
+/>
+</div>
+  </div>)
+render(<Demo />, document.querySelector('#demo'))
+
+```
+## Features
+* Automatically format the number as the user types
+* Navigate the country dropdown by typing a country's name, or using up/down keys
+* Selecting a country from the dropdown will update the dial code in the input
+* Typing a different dial code will automatically update the displayed flag
+* Country names in the dropdown also include localised versions in brackets
+* Dropdown appears above or below the input depending on available space/scroll position
+
+### Prerequisites
+
+Requires following as peerDependencies
+ - material-ui
+ - react
+ - react-dom
+ - react-tap-event-plugin
+
+### Development
+
+Clone the repository
+
+```
+git clone https://github.com/rahulravindrancopart/react-telephone-input.git
+```
+
+Run npm install
+
+```
+npm install
+```
+Or yarn
+
+```
+yarn install
+```
+
+Run the demo files
+
+```
+yarn run start
+```
+
+Run clean
+```
+yarn run clean
+```
+Build the files
+```
+yarn run build
+```
+
+## Running the tests
+
+```
+yarn test
+```
+
+### Linting
+
+
+```
+yarn run lint
+```
+
+## Built With
+
+* [React](http://www.reactjs.org/) - Facebook's rendering library
+* [material-ui](https://material-ui.com/) - React based presentational components using Google's material design principles
+
+
+## Contributing
+
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/rahulravindrancopart/react-telephone-input/releases).
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* Hat tip to [mukeshsoni](https://github.com/mukeshsoni), for creating the original plugin in react
+
+
+## Component props
 The component accepts other props to customize it -
 
 #### value and initialValue
@@ -66,63 +158,22 @@ E.g.
   />
 ```
 #### classNames
-You can send in additional classes to be applied to the top container div of the component.
+You can send in style classes to be applied to the top container div of the component.
 
 #### onChange
-Function, which is called whenever there is a change of value in the input box.
+Function, called whenever there is a change of value in the input box.
 
 #### onEnterKeyPress
-Function, which is called when user presses the 'enter' key when the input box is in focus.
+Function, called when user presses the 'enter' key when the input box is in focus.
 
 #### onBlur
-Function, which is called when the focus goes away from the input box.
+Function, called when the focus goes away from the input box.
 
 #### onFocus
-Function, which is called when the input box gets the focus.
+Function, called when the input box gets the focus.
 
 #### disabled
 Boolean value. When set to true, the input box is disabled and clicking on flag dropdown does nothing.
 
-#### pattern
-String. This is passed on to the input field and works like it should for any other input field.
-
-
-## How to use it
-- If you install it from `npm install`, you can just do `var ReactTelephoneInput = require('react-telephone-input');`
-- You will need to copy flags.png from example/src folder to see the flag icons for each country.
-- Set the path to the flags image using the prop `flagsImagePath`
-```js
-function handleInputChange(telNumber, selectedCountry) {
-	console.log('input changed. number: ', telNumber, 'selected country: ', selectedCountry);
-}
-
-function handleInputBlur(telNumber, selectedCountry) {
-  console.log('Focus off the ReactTelephoneInput component. Tel number entered is: ', telNumber, ' selected country is: ', selectedCountry);
-}
-
-<ReactTelephoneInput
-        defaultCountry='in'
-        flagsImagePath='/path/to/images/flags.png'
-        onChange={handleInputChange}
-        onBlur={handleInputBlur}
-        />
-```
-The default value for `flagsImagePath` is 'flags.png'
-
-
-## Features
-* Automatically format the number as the user types
-* Navigate the country dropdown by typing a country's name, or using up/down keys
-* Selecting a country from the dropdown will update the dial code in the input
-* Typing a different dial code will automatically update the displayed flag
-* Country names in the dropdown also include localised versions in brackets
-* Dropdown appears above or below the input depending on available space/scroll position
-
-You can try the app by downloading everything and running the commands given below -
-
-```
-$ npm install
-$ npm start
-
-go to your browser and type `http://localhost:3000`
-```
+#### flagDropDownEnabled
+Boolean value. False by default. To toggle the flag display functionality 
