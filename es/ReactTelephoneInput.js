@@ -348,7 +348,6 @@ var ReactTelephoneInput = function (_React$Component) {
       }
       var newSelectedCountry = _this.guessSelectedCountry(selectedValue.substring(0, 6));
       formattedNumber = _this.formatNumber(selectedValue, newSelectedCountry.format);
-      console.log(_this.numberInput, 'numberinput');
       var caretPosition = _this.numberInput.input.selectionStart;
       var oldFormattedText = _this.state.formattedNumber;
       var diff = formattedNumber.length - oldFormattedText.length;
@@ -670,8 +669,10 @@ var ReactTelephoneInput = function (_React$Component) {
       // just cleared the value
       inputNumber = '';
     } else if (this.state && this.state.formattedNumber && this.state.formattedNumber.length > 0) {
+      console.log('In last else if');
       inputNumber = this.state.formattedNumber;
     } else {
+      console.log('In else');
       inputNumber = '';
     }
 
@@ -689,9 +690,15 @@ var ReactTelephoneInput = function (_React$Component) {
   ReactTelephoneInput.prototype._fillDialCode = function _fillDialCode() {
     // if the input is blank, insert dial code of the selected country
     if (this.numberInput.input.value === '+') {
-      this.setState({
-        formattedNumber: '+' + this.state.selectedCountry.dialCode
-      });
+      if (this.props.disabled) {
+        this.setState({
+          formattedNumber: ''
+        });
+      } else {
+        this.setState({
+          formattedNumber: '+' + this.state.selectedCountry.dialCode
+        });
+      }
     }
   };
 
@@ -721,7 +728,6 @@ var ReactTelephoneInput = function (_React$Component) {
         autoSelect = _props.autoSelect,
         autoSelectOptions = _props.autoSelectOptions,
         isValid = _props.isValid,
-        autoComplete = _props.autoComplete,
         placeholder = _props.placeholder,
         pattern = _props.pattern,
         disabled = _props.disabled,
@@ -809,7 +815,7 @@ var ReactTelephoneInput = function (_React$Component) {
           className: inputClasses,
           pattern: pattern,
           required: required,
-          hintText: placeholder,
+          hintText: !disabled && placeholder,
           disabled: disabled,
           id: id,
           name: name,

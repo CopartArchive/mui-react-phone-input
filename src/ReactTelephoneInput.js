@@ -774,10 +774,10 @@ class ReactTelephoneInput extends React.Component {
         allCountries,
         selectedCountryGuess
       )
-      const formattedNumber = props.disabled && !inputNumber? this.formatNumber(
+      const formattedNumber = this.formatNumber(
         inputNumber.replace(/\D/g, ''),
         selectedCountryGuess ? selectedCountryGuess.format : null
-      ) : ''
+      )
 
       return {
         selectedCountry: selectedCountryGuess,
@@ -788,9 +788,15 @@ class ReactTelephoneInput extends React.Component {
     _fillDialCode() {
       // if the input is blank, insert dial code of the selected country
       if (this.numberInput.input.value === '+') {
-        this.setState({
-          formattedNumber: `+${this.state.selectedCountry.dialCode}`
-        })
+        if (this.props.disabled) {
+          this.setState({
+            formattedNumber: ''
+          })
+        } else {
+          this.setState({
+            formattedNumber: `+${this.state.selectedCountry.dialCode}`
+          })
+        }
       }
     }
 
@@ -923,7 +929,7 @@ class ReactTelephoneInput extends React.Component {
               className={inputClasses}
               pattern={pattern}
               required={required}
-              hintText={placeholder}
+              hintText={!disabled && placeholder}
               disabled={disabled}
               id={id}
               name={name}
