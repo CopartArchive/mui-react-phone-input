@@ -6,7 +6,7 @@ import RTI from '../../src/withStyles';
 
 injectTapEventPlugin();
 const changeHandler = (target, formattedNumber, selectedCountry, rawValue) => {
-  console.log(`${target.value} - ${formattedNumber} - ${rawValue}`, 'Target object and current value')
+  console.log(`${formattedNumber} - ${rawValue}`, 'Formatted value and raw value')
 }
 const Demo = () => (<div>
   <h1>React Telephone Input Demo</h1>
@@ -32,7 +32,7 @@ const Demo = () => (<div>
         flagDropDownEnabled={false}
         value={''}
       />
-    <h2>With default country without value</h2>
+      <h2>With default country without value</h2>
       <RTI
         flagsImagePath="./images/flags.png"
         name="phone"
@@ -43,41 +43,41 @@ const Demo = () => (<div>
         defaultCountry={'de'}
         value={''}
       />
-    <h2>With default country without value disabled</h2>
-        <RTI
-          flagsImagePath="./images/flags.png"
-          name="phone"
-          onChange={changeHandler}
-          floatingLabelText="phone"
-          floatingLabelStyle={{ color: '#01579b' }}
-          flagDropDownEnabled={false}
-          defaultCountry={'de'}
-          value={''}
-          disabled
-        />
-    <h2>With default country with value</h2>
-        <RTI
-          flagsImagePath="./images/flags.png"
-          name="phone"
-          onChange={changeHandler}
-          floatingLabelText="phone"
-          floatingLabelStyle={{ color: '#01579b' }}
-          flagDropDownEnabled={false}
-          defaultCountry={'de'}
-          value={'649812'}
-        />
+      <h2>With default country without value disabled</h2>
+      <RTI
+        flagsImagePath="./images/flags.png"
+        name="phone"
+        onChange={changeHandler}
+        floatingLabelText="phone"
+        floatingLabelStyle={{ color: '#01579b' }}
+        flagDropDownEnabled={false}
+        defaultCountry={'de'}
+        value={''}
+        disabled
+      />
+      <h2>With default country with value</h2>
+      <RTI
+        flagsImagePath="./images/flags.png"
+        name="phone"
+        onChange={changeHandler}
+        floatingLabelText="phone"
+        floatingLabelStyle={{ color: '#01579b' }}
+        flagDropDownEnabled={false}
+        defaultCountry={'de'}
+        value={'649812'}
+      />
       <h2>With default country with value disabled</h2>
-            <RTI
-              flagsImagePath="./images/flags.png"
-              name="phone"
-              onChange={changeHandler}
-              floatingLabelText="phone"
-              floatingLabelStyle={{ color: '#01579b' }}
-              flagDropDownEnabled={false}
-              defaultCountry={'de'}
-              value={'649812'}
-              disabled
-            />
+      <RTI
+        flagsImagePath="./images/flags.png"
+        name="phone"
+        onChange={changeHandler}
+        floatingLabelText="phone"
+        floatingLabelStyle={{ color: '#01579b' }}
+        flagDropDownEnabled={false}
+        defaultCountry={'de'}
+        value={'649812'}
+        disabled
+      />
     </div>
   </MuiThemeProvider>
 </div>)
