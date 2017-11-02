@@ -6,12 +6,11 @@ import reduce from 'lodash/reduce';
 import map from 'lodash/map';
 import filter from 'lodash/filter';
 import findIndex from 'lodash/findIndex';
-import first from 'lodash/first';
-import tail from 'lodash/tail';
 import debounce from 'lodash/debounce';
 import memoize from 'lodash/memoize';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
+import { asYouType } from 'libphonenumber-js'
 // import lodash string methods
 import trim from 'lodash/trim';
 import startsWith from 'lodash/startsWith';
@@ -350,32 +349,8 @@ class ReactTelephoneInput extends React.Component {
     if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
       return `+${text}`
     }
-
-    const formattedObject = reduce(
-      pattern,
-      (acc, character) => {
-        if (acc.remainingText.length === 0) {
-          return acc
-        }
-
-        if (character !== '.') {
-          return {
-            formattedText: acc.formattedText + character,
-            remainingText: acc.remainingText
-          }
-        }
-
-        return {
-          formattedText: acc.formattedText + first(acc.remainingText),
-          remainingText: tail(acc.remainingText)
-        }
-      },
-      { formattedText: '', remainingText: text.split('') }
-    );
-    return (
-      formattedObject.formattedText +
-              formattedObject.remainingText.join('')
-    )
+    const finalNumber = new asYouType().input(`+${text}`)
+    return finalNumber
   }
   scrollTo(country, middle) {
     if (!country) {
