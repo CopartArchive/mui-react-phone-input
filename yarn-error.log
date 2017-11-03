@@ -16,7 +16,7 @@ Platform:
 npm manifest: 
   {
     "name": "mui-react-phone-input",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "description": "MUI and React component for entering and validating international telephone numbers",
     "main": "lib/ReactTelephoneInput.js",
     "modules": "es/ReactTelephoneInput.js",
@@ -9816,14 +9816,14 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
 
 Trace: 
-  Error: https://registry.yarnpkg.com/mui-react-phone-input: You cannot publish over the previously published version 0.0.1.
-      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.2.1/libexec/lib/cli.js:62027:18)
-      at Request.self.callback (/usr/local/Cellar/yarn/1.2.1/libexec/lib/cli.js:123011:22)
+  Error: canceled
+      at Interface.<anonymous> (/usr/local/Cellar/yarn/1.2.1/libexec/lib/cli.js:120971:13)
+      at emitNone (events.js:105:13)
+      at Interface.emit (events.js:207:7)
+      at Interface._ttyWrite (readline.js:775:16)
+      at ReadStream.onkeypress (readline.js:160:10)
       at emitTwo (events.js:125:13)
-      at Request.emit (events.js:213:7)
-      at Request.<anonymous> (/usr/local/Cellar/yarn/1.2.1/libexec/lib/cli.js:123994:10)
-      at emitOne (events.js:115:13)
-      at Request.emit (events.js:210:7)
-      at Gunzip.<anonymous> (/usr/local/Cellar/yarn/1.2.1/libexec/lib/cli.js:123914:12)
-      at Object.onceWrapper (events.js:312:30)
-      at emitNone (events.js:110:20)
+      at ReadStream.emit (events.js:213:7)
+      at emitKeys (internal/readline.js:420:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1011:36)
