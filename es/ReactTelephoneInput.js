@@ -34,7 +34,6 @@ import { List, ListItem } from 'material-ui/List';
 import { isNumberValid, getUnformattedValue, isModernBrowser } from './utils';
 import styles from '../css/default.css';
 import flagImage from '../images/flags.png';
-import AutoselectOptions from './AutoselectOptions';
 
 var allCountries = countryData.allCountries;
 var iso2Lookup = countryData.iso2Lookup;
@@ -131,9 +130,7 @@ var propTypes = {
   underlineFocusStyle: PropTypes.shape(),
   floatingLabelFixed: PropTypes.bool,
   multiLine: PropTypes.bool,
-  hintStyle: PropTypes.shape(),
-  autoSelect: PropTypes.bool,
-  autoSelectOptions: PropTypes.arrayOf(PropTypes.shape())
+  hintStyle: PropTypes.shape()
 };
 var defaultProps = {
   autoFormat: true,
@@ -158,9 +155,7 @@ var defaultProps = {
   underlineFocusStyle: {},
   floatingLabelFixed: true,
   multiLine: false,
-  hintStyle: {},
-  autoSelect: false,
-  autoSelectOptions: []
+  hintStyle: {}
 };
 
 var ReactTelephoneInput = function (_React$Component) {
@@ -338,43 +333,6 @@ var ReactTelephoneInput = function (_React$Component) {
       if (typeof _this.props.onBlur === 'function') {
         _this.props.onBlur(_this.state.formattedNumber, _this.state.selectedCountry);
       }
-    };
-
-    _this.handleAutoselectListSelect = function (selectedValue) {
-      var formattedNumber = '+';
-      // if the input is the same as before, must be some special key like enter etc.
-      if (selectedValue === _this.state.formattedNumber) {
-        return;
-      }
-      var newSelectedCountry = _this.guessSelectedCountry(selectedValue.substring(0, 6));
-      formattedNumber = _this.formatNumber(selectedValue, newSelectedCountry.format);
-      var caretPosition = _this.numberInput.input.selectionStart;
-      var oldFormattedText = _this.state.formattedNumber;
-      var diff = formattedNumber.length - oldFormattedText.length;
-      _this.numberInput.input.focus();
-      var onSetStateComplete = function onSetStateComplete() {
-        if (isModernBrowser) {
-          if (caretPosition === 1 && formattedNumber.length === 2) {
-            caretPosition += 1;
-          }
-
-          if (diff > 0) {
-            caretPosition -= diff;
-          }
-
-          if (caretPosition > 0 && oldFormattedText.length >= formattedNumber.length) {
-            _this.numberInput.input.setSelectionRange(caretPosition, caretPosition);
-          }
-        }
-
-        if (_this.props.onChange) {
-          _this.props.onChange(_this.numberInput.input, _this.state.formattedNumber, _this.state.selectedCountry, getUnformattedValue(_this.state.formattedNumber));
-        }
-      };
-      _this.setState({
-        formattedNumber: formattedNumber,
-        selectedCountry: newSelectedCountry.dialCode.length > 0 ? newSelectedCountry : _this.state.selectedCountry
-      }, onSetStateComplete);
     };
 
     _this._searchCountry = memoize(function (queryString) {
@@ -723,8 +681,6 @@ var ReactTelephoneInput = function (_React$Component) {
     var _props = this.props,
         id = _props.inputId,
         name = _props.name,
-        autoSelect = _props.autoSelect,
-        autoSelectOptions = _props.autoSelectOptions,
         isValid = _props.isValid,
         placeholder = _props.placeholder,
         pattern = _props.pattern,
@@ -756,8 +712,7 @@ var ReactTelephoneInput = function (_React$Component) {
         flagStyle = styles.flag,
         invalidNumberStyle = styles['invalid-number'],
         selectedFlagStyle = styles['selected-flag'],
-        textFieldContainerStyle = styles['phone-text-field-container'],
-        autoSelectMenuContainerStyle = styles['autoselect-menu-container'];
+        textFieldContainerStyle = styles['phone-text-field-container'];
 
     var selectedCountryFlagStyle = styles[selectedCountry.iso2];
     var rootClasses = classNames((_classNames4 = {}, _classNames4['' + rootStyle] = true, _classNames4));
@@ -829,16 +784,6 @@ var ReactTelephoneInput = function (_React$Component) {
           multiLine: multiLine,
           hintStyle: hintStyle,
           fullWidth: true
-        })
-      ),
-      React.createElement(
-        'div',
-        { className: autoSelectMenuContainerStyle },
-        autoSelect && React.createElement(AutoselectOptions, {
-          searchTerm: rawValue,
-          options: autoSelectOptions,
-          isOpen: this.state.suggestionsOpen,
-          onListItemSelect: this.handleAutoselectListSelect
         })
       )
     );
