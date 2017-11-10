@@ -73,8 +73,7 @@
     "classnames": "^2.1.2",
     "country-telephone-data": "0.4.2",
     "lodash": "4.17.4",
-    "react-onclickoutside": "^6.5.0",
-    "react-virtualized": "8.0.1"
+    "react-onclickoutside": "^6.5.0"
   },
   "peerDependencies": {
     "material-ui": "0.15.4",
