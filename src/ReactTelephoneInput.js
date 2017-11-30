@@ -86,6 +86,7 @@ const propTypes = {
   initialValue: PropTypes.string,
   style: PropTypes.shape(),
   errorText: PropTypes.string,
+  errorStyle: PropTypes.object,
   autoFormat: PropTypes.bool,
   defaultCountry: PropTypes.string,
   onlyCountries: PropTypes.arrayOf(PropTypes.object),
@@ -143,6 +144,7 @@ const defaultProps = {
   hintStyle: {},
   autoSelect: false,
   autoSelectOptions: [],
+  errorStyle: {}
 }
 class ReactTelephoneInput extends React.Component {
   constructor(props) {
@@ -848,7 +850,8 @@ class ReactTelephoneInput extends React.Component {
         floatingLabelFixed,
         multiLine,
         hintStyle,
-        required } = this.props
+        required,
+        errorStyle,} = this.props
       const { formattedNumber, showDropDown, selectedCountry } = this.state
       const rawValue = getUnformattedValue(formattedNumber)
       const {
@@ -933,6 +936,7 @@ class ReactTelephoneInput extends React.Component {
               name={name}
               style={style}
               errorText={errorText}
+              errorStyle={errorStyle}
               title={formattedNumber}
               maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
               floatingLabelText={floatingLabelText}
