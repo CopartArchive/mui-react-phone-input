@@ -39,11 +39,6 @@ var allCountries = countryData.allCountries;
 var iso2Lookup = countryData.iso2Lookup;
 var allCountryCodes = countryData.allCountryCodes;
 
-export var parsePhoneNumber = function parsePhoneNumber(text) {
-  var number = text.replace(/\D/g, '');
-  return new asYouType().input('+' + number);
-};
-
 var keys = {
   UP: 38,
   DOWN: 40,

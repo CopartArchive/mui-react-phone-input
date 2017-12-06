@@ -33,11 +33,6 @@ const allCountries = countryData.allCountries;
 const iso2Lookup = countryData.iso2Lookup;
 const allCountryCodes = countryData.allCountryCodes;
 
-export const parsePhoneNumber = (text) => {
-  const number = text.replace(/\D/g, '')
-  return new asYouType().input(`+${number}`)
-}
-
 const keys = {
   UP: 38,
   DOWN: 40,
