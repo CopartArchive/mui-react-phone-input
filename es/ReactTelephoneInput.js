@@ -103,6 +103,7 @@ var propTypes = {
   initialValue: PropTypes.string,
   style: PropTypes.shape(),
   errorText: PropTypes.string,
+  errorStyle: PropTypes.object,
   autoFormat: PropTypes.bool,
   defaultCountry: PropTypes.string,
   onlyCountries: PropTypes.arrayOf(PropTypes.object),
@@ -159,7 +160,8 @@ var defaultProps = {
   multiLine: false,
   hintStyle: {},
   autoSelect: false,
-  autoSelectOptions: []
+  autoSelectOptions: [],
+  errorStyle: {}
 };
 
 var ReactTelephoneInput = function (_React$Component) {
@@ -721,7 +723,8 @@ var ReactTelephoneInput = function (_React$Component) {
         floatingLabelFixed = _props.floatingLabelFixed,
         multiLine = _props.multiLine,
         hintStyle = _props.hintStyle,
-        required = _props.required;
+        required = _props.required,
+        errorStyle = _props.errorStyle;
     var _state = this.state,
         formattedNumber = _state.formattedNumber,
         showDropDown = _state.showDropDown,
@@ -801,6 +804,7 @@ var ReactTelephoneInput = function (_React$Component) {
           name: name,
           style: style,
           errorText: errorText,
+          errorStyle: errorStyle,
           title: formattedNumber,
           maxLength: selectedCountry.format && selectedCountry.format.length || 50,
           floatingLabelText: floatingLabelText,

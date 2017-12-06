@@ -1,6 +1,6 @@
 .react-tel-input {
   display: flex;
-  width: 250px;
+  width: 100%;
   flex-wrap: wrap;
   align-items: center; }
   .react-tel-input .ad {
@@ -472,7 +472,7 @@
   .react-tel-input .v-hide {
     visibility: hidden; }
   .react-tel-input .phone-text-field-container {
-    flex: 0 1 80%; }
+    flex: 0 1 100%; }
   .react-tel-input input[type=text],
   .react-tel-input input[type=tel] {
     width: 100%; }
