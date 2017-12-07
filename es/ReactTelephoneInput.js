@@ -550,7 +550,7 @@ var ReactTelephoneInput = function (_React$Component) {
     }
   };
 
-  ReactTelephoneInput.prototype.formatNumber = function formatNumber(text, pattern) {
+  ReactTelephoneInput.prototype.formatNumber = function formatNumber(text, pattern, firstCall) {
     if (!text || text.length === 0) {
       return '+';
     }
@@ -559,8 +559,19 @@ var ReactTelephoneInput = function (_React$Component) {
     if (text && text.length < 2 || !pattern || !this.props.autoFormat) {
       return '+' + text;
     }
-    var finalNumber = new asYouType().input('+' + text);
-    return finalNumber;
+    var formatter = new asYouType();
+    var formattedNumber = formatter.input('+' + text);
+
+    var nextFormatter = new asYouType();
+    nextFormatter.input('+' + text + '5');
+    var isNextInputValid = nextFormatter.template || nextFormatter.country;
+
+    if (!isNextInputValid && !firstCall) {
+      this.setState({ maxLength: formatter.template && formatter.template.length });
+    }
+    formatter.reset();
+    nextFormatter.reset();
+    return formattedNumber;
   };
 
   ReactTelephoneInput.prototype.scrollTo = function scrollTo(country, middle) {
@@ -660,7 +671,7 @@ var ReactTelephoneInput = function (_React$Component) {
 
     var selectedCountryGuess = this.guessSelectedCountry(inputNumber.replace(/\D/g, ''));
     var selectedCountryGuessIndex = findIndex(allCountries, selectedCountryGuess);
-    var formattedNumber = this.formatNumber(inputNumber.replace(/\D/g, ''), selectedCountryGuess ? selectedCountryGuess.format : null);
+    var formattedNumber = this.formatNumber(inputNumber.replace(/\D/g, ''), selectedCountryGuess ? selectedCountryGuess.format : null, firstCall);
 
     return {
       selectedCountry: selectedCountryGuess,
@@ -728,7 +739,8 @@ var ReactTelephoneInput = function (_React$Component) {
     var _state = this.state,
         formattedNumber = _state.formattedNumber,
         showDropDown = _state.showDropDown,
-        selectedCountry = _state.selectedCountry;
+        selectedCountry = _state.selectedCountry,
+        maxLength = _state.maxLength;
 
     var rawValue = getUnformattedValue(formattedNumber);
     var arrowStyle = styles.arrow,
@@ -806,7 +818,7 @@ var ReactTelephoneInput = function (_React$Component) {
           errorText: errorText,
           errorStyle: errorStyle,
           title: formattedNumber,
-          maxLength: selectedCountry.format && selectedCountry.format.length || 50,
+          maxLength: maxLength || 17,
           floatingLabelText: floatingLabelText,
           floatingLabelStyle: floatingLabelStyle,
           inputStyle: inputStyle,

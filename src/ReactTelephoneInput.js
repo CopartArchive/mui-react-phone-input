@@ -342,7 +342,7 @@ class ReactTelephoneInput extends React.Component {
       }
     }
   }
-  formatNumber(text, pattern) {
+  formatNumber(text, pattern, firstCall) {
     if (!text || text.length === 0) {
       return '+'
     }
@@ -351,8 +351,19 @@ class ReactTelephoneInput extends React.Component {
     if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
       return `+${text}`
     }
-    const finalNumber = new asYouType().input(`+${text}`)
-    return finalNumber
+    const formatter = new asYouType()
+    const formattedNumber = formatter.input(`+${text}`)
+
+    const nextFormatter = new asYouType()
+    nextFormatter.input(`+${text}5`)
+    const isNextInputValid = (nextFormatter.template || nextFormatter.country)
+
+    if (!isNextInputValid && !firstCall) {
+      this.setState({ maxLength: formatter.template && formatter.template.length })
+    }
+    formatter.reset()
+    nextFormatter.reset()
+    return formattedNumber
   }
   scrollTo(country, middle) {
     if (!country) {
@@ -748,7 +759,8 @@ class ReactTelephoneInput extends React.Component {
       )
       const formattedNumber = this.formatNumber(
         inputNumber.replace(/\D/g, ''),
-        selectedCountryGuess ? selectedCountryGuess.format : null
+        selectedCountryGuess ? selectedCountryGuess.format : null,
+        firstCall
       )
 
       return {
@@ -823,8 +835,14 @@ class ReactTelephoneInput extends React.Component {
         multiLine,
         hintStyle,
         required,
-        errorStyle,} = this.props
-      const { formattedNumber, showDropDown, selectedCountry } = this.state
+        errorStyle
+      } = this.props
+      const {
+        formattedNumber,
+        showDropDown,
+        selectedCountry,
+        maxLength
+      } = this.state
       const rawValue = getUnformattedValue(formattedNumber)
       const {
         arrow: arrowStyle,
@@ -910,7 +928,7 @@ class ReactTelephoneInput extends React.Component {
               errorText={errorText}
               errorStyle={errorStyle}
               title={formattedNumber}
-              maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
+              maxLength={maxLength || 17}
               floatingLabelText={floatingLabelText}
               floatingLabelStyle={floatingLabelStyle}
               inputStyle={inputStyle}
