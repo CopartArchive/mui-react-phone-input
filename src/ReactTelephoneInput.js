@@ -6,12 +6,11 @@ import reduce from 'lodash/reduce';
 import map from 'lodash/map';
 import filter from 'lodash/filter';
 import findIndex from 'lodash/findIndex';
-import first from 'lodash/first';
-import tail from 'lodash/tail';
 import debounce from 'lodash/debounce';
 import memoize from 'lodash/memoize';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
+import { asYouType } from 'libphonenumber-js'
 // import lodash string methods
 import trim from 'lodash/trim';
 import startsWith from 'lodash/startsWith';
@@ -343,7 +342,7 @@ class ReactTelephoneInput extends React.Component {
       }
     }
   }
-  formatNumber(text, pattern) {
+  formatNumber(text, pattern, firstCall) {
     if (!text || text.length === 0) {
       return '+'
     }
@@ -352,32 +351,19 @@ class ReactTelephoneInput extends React.Component {
     if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
       return `+${text}`
     }
+    const formatter = new asYouType()
+    const formattedNumber = formatter.input(`+${text}`)
 
-    const formattedObject = reduce(
-      pattern,
-      (acc, character) => {
-        if (acc.remainingText.length === 0) {
-          return acc
-        }
+    const nextFormatter = new asYouType()
+    nextFormatter.input(`+${text}5`)
+    const isNextInputValid = (nextFormatter.template || nextFormatter.country)
 
-        if (character !== '.') {
-          return {
-            formattedText: acc.formattedText + character,
-            remainingText: acc.remainingText
-          }
-        }
-
-        return {
-          formattedText: acc.formattedText + first(acc.remainingText),
-          remainingText: tail(acc.remainingText)
-        }
-      },
-      { formattedText: '', remainingText: text.split('') }
-    );
-    return (
-      formattedObject.formattedText +
-              formattedObject.remainingText.join('')
-    )
+    if (!isNextInputValid && !firstCall) {
+      this.setState({ maxLength: formatter.template && formatter.template.length })
+    }
+    formatter.reset()
+    nextFormatter.reset()
+    return formattedNumber
   }
   scrollTo(country, middle) {
     if (!country) {
@@ -615,10 +601,7 @@ class ReactTelephoneInput extends React.Component {
             caretPosition -= diff
           }
 
-          if (
-            caretPosition > 0 &&
-                      oldFormattedText.length >= formattedNumber.length
-          ) {
+          if (caretPosition > 0 && oldFormattedText.length >= formattedNumber.length) {
             this.numberInput.input.setSelectionRange(
               caretPosition,
               caretPosition
@@ -776,7 +759,8 @@ class ReactTelephoneInput extends React.Component {
       )
       const formattedNumber = this.formatNumber(
         inputNumber.replace(/\D/g, ''),
-        selectedCountryGuess ? selectedCountryGuess.format : null
+        selectedCountryGuess ? selectedCountryGuess.format : null,
+        firstCall
       )
 
       return {
@@ -851,8 +835,14 @@ class ReactTelephoneInput extends React.Component {
         multiLine,
         hintStyle,
         required,
-        errorStyle,} = this.props
-      const { formattedNumber, showDropDown, selectedCountry } = this.state
+        errorStyle
+      } = this.props
+      const {
+        formattedNumber,
+        showDropDown,
+        selectedCountry,
+        maxLength
+      } = this.state
       const rawValue = getUnformattedValue(formattedNumber)
       const {
         arrow: arrowStyle,
@@ -938,7 +928,7 @@ class ReactTelephoneInput extends React.Component {
               errorText={errorText}
               errorStyle={errorStyle}
               title={formattedNumber}
-              maxLength={(selectedCountry.format && selectedCountry.format.length) || 50}
+              maxLength={maxLength || 17}
               floatingLabelText={floatingLabelText}
               floatingLabelStyle={floatingLabelStyle}
               inputStyle={inputStyle}

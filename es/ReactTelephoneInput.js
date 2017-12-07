@@ -12,12 +12,11 @@ import reduce from 'lodash/reduce';
 import map from 'lodash/map';
 import filter from 'lodash/filter';
 import findIndex from 'lodash/findIndex';
-import first from 'lodash/first';
-import tail from 'lodash/tail';
 import debounce from 'lodash/debounce';
 import memoize from 'lodash/memoize';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
+import { asYouType } from 'libphonenumber-js';
 // import lodash string methods
 import trim from 'lodash/trim';
 import startsWith from 'lodash/startsWith';
@@ -551,7 +550,7 @@ var ReactTelephoneInput = function (_React$Component) {
     }
   };
 
-  ReactTelephoneInput.prototype.formatNumber = function formatNumber(text, pattern) {
+  ReactTelephoneInput.prototype.formatNumber = function formatNumber(text, pattern, firstCall) {
     if (!text || text.length === 0) {
       return '+';
     }
@@ -560,25 +559,19 @@ var ReactTelephoneInput = function (_React$Component) {
     if (text && text.length < 2 || !pattern || !this.props.autoFormat) {
       return '+' + text;
     }
+    var formatter = new asYouType();
+    var formattedNumber = formatter.input('+' + text);
 
-    var formattedObject = reduce(pattern, function (acc, character) {
-      if (acc.remainingText.length === 0) {
-        return acc;
-      }
+    var nextFormatter = new asYouType();
+    nextFormatter.input('+' + text + '5');
+    var isNextInputValid = nextFormatter.template || nextFormatter.country;
 
-      if (character !== '.') {
-        return {
-          formattedText: acc.formattedText + character,
-          remainingText: acc.remainingText
-        };
-      }
-
-      return {
-        formattedText: acc.formattedText + first(acc.remainingText),
-        remainingText: tail(acc.remainingText)
-      };
-    }, { formattedText: '', remainingText: text.split('') });
-    return formattedObject.formattedText + formattedObject.remainingText.join('');
+    if (!isNextInputValid && !firstCall) {
+      this.setState({ maxLength: formatter.template && formatter.template.length });
+    }
+    formatter.reset();
+    nextFormatter.reset();
+    return formattedNumber;
   };
 
   ReactTelephoneInput.prototype.scrollTo = function scrollTo(country, middle) {
@@ -678,7 +671,7 @@ var ReactTelephoneInput = function (_React$Component) {
 
     var selectedCountryGuess = this.guessSelectedCountry(inputNumber.replace(/\D/g, ''));
     var selectedCountryGuessIndex = findIndex(allCountries, selectedCountryGuess);
-    var formattedNumber = this.formatNumber(inputNumber.replace(/\D/g, ''), selectedCountryGuess ? selectedCountryGuess.format : null);
+    var formattedNumber = this.formatNumber(inputNumber.replace(/\D/g, ''), selectedCountryGuess ? selectedCountryGuess.format : null, firstCall);
 
     return {
       selectedCountry: selectedCountryGuess,
@@ -746,7 +739,8 @@ var ReactTelephoneInput = function (_React$Component) {
     var _state = this.state,
         formattedNumber = _state.formattedNumber,
         showDropDown = _state.showDropDown,
-        selectedCountry = _state.selectedCountry;
+        selectedCountry = _state.selectedCountry,
+        maxLength = _state.maxLength;
 
     var rawValue = getUnformattedValue(formattedNumber);
     var arrowStyle = styles.arrow,
@@ -824,7 +818,7 @@ var ReactTelephoneInput = function (_React$Component) {
           errorText: errorText,
           errorStyle: errorStyle,
           title: formattedNumber,
-          maxLength: selectedCountry.format && selectedCountry.format.length || 50,
+          maxLength: maxLength || 17,
           floatingLabelText: floatingLabelText,
           floatingLabelStyle: floatingLabelStyle,
           inputStyle: inputStyle,

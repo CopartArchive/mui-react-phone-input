@@ -8,8 +8,9 @@ injectTapEventPlugin();
 const changeHandler = (target, formattedNumber, selectedCountry, rawValue) => {
   console.log(`${formattedNumber} - ${rawValue}`, 'Formatted value and raw value')
 }
+
 const Demo = () => (<div>
-  <h1>React Telephone Input Demo</h1>
+  <h1>React Telephone Input Demo </h1>
   <MuiThemeProvider>
     <div>
       <h2>WIth flag dropdown</h2>
