@@ -349,6 +349,7 @@ class ReactTelephoneInput extends React.Component {
     // for all strings with length less than 3, just return it (1, 2 etc.)
     // also return the same text if the selected country has no fixed format
     if ((text && text.length < 2) || !pattern || !this.props.autoFormat) {
+      this.setState({ maxLength: undefined })
       return `+${text}`
     }
     const formatter = new asYouType()
@@ -928,7 +929,7 @@ class ReactTelephoneInput extends React.Component {
               errorText={errorText}
               errorStyle={errorStyle}
               title={formattedNumber}
-              maxLength={maxLength || 17}
+              maxLength={maxLength || 20}
               floatingLabelText={floatingLabelText}
               floatingLabelStyle={floatingLabelStyle}
               inputStyle={inputStyle}
