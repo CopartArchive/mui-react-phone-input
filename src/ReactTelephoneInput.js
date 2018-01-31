@@ -179,6 +179,7 @@ class ReactTelephoneInput extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     this.setState(this._mapPropsToState(nextProps))
+    this._fillDialCode()
   }
   shouldComponentUpdate(nextProps, nextState) {
     return (
