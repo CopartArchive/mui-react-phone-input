@@ -168,14 +168,6 @@ class ReactTelephoneInput extends React.Component {
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeydown)
     this._cursorToEnd(true)
-    if (typeof this.props.onChange === 'function') {
-      this.props.onChange(
-        this.numberInput.input,
-        this.state.formattedNumber,
-        this.state.selectedCountry,
-        getUnformattedValue(this.state.formattedNumber)
-      )
-    }
   }
   componentWillReceiveProps(nextProps) {
     this.setState(this._mapPropsToState(nextProps))
@@ -773,15 +765,20 @@ class ReactTelephoneInput extends React.Component {
     _fillDialCode() {
       // if the input is blank, insert dial code of the selected country
       if (this.numberInput.input.value === '+') {
-        if (this.props.disabled) {
-          this.setState({
-            formattedNumber: ''
-          })
-        } else {
-          this.setState({
-            formattedNumber: `+${this.state.selectedCountry.dialCode}`
-          })
+        this.setState({
+          formattedNumber: this.props.disabled ? '' : `+${this.state.selectedCountry.dialCode}`
+        },
+        () => {
+          if (typeof this.props.onChange === 'function') {
+            this.props.onChange(
+              this.numberInput.input,
+              this.state.formattedNumber,
+              this.state.selectedCountry,
+              getUnformattedValue(this.state.formattedNumber)
+            )
+          }
         }
+        )
       }
     }
 

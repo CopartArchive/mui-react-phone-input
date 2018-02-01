@@ -408,9 +408,6 @@ var ReactTelephoneInput = function (_React$Component) {
   ReactTelephoneInput.prototype.componentDidMount = function componentDidMount() {
     document.addEventListener('keydown', this.handleKeydown);
     this._cursorToEnd(true);
-    if (typeof this.props.onChange === 'function') {
-      this.props.onChange(this.numberInput.input, this.state.formattedNumber, this.state.selectedCountry, getUnformattedValue(this.state.formattedNumber));
-    }
   };
 
   ReactTelephoneInput.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
@@ -682,17 +679,17 @@ var ReactTelephoneInput = function (_React$Component) {
   };
 
   ReactTelephoneInput.prototype._fillDialCode = function _fillDialCode() {
+    var _this4 = this;
+
     // if the input is blank, insert dial code of the selected country
     if (this.numberInput.input.value === '+') {
-      if (this.props.disabled) {
-        this.setState({
-          formattedNumber: ''
-        });
-      } else {
-        this.setState({
-          formattedNumber: '+' + this.state.selectedCountry.dialCode
-        });
-      }
+      this.setState({
+        formattedNumber: this.props.disabled ? '' : '+' + this.state.selectedCountry.dialCode
+      }, function () {
+        if (typeof _this4.props.onChange === 'function') {
+          _this4.props.onChange(_this4.numberInput.input, _this4.state.formattedNumber, _this4.state.selectedCountry, getUnformattedValue(_this4.state.formattedNumber));
+        }
+      });
     }
   };
 
@@ -714,7 +711,7 @@ var ReactTelephoneInput = function (_React$Component) {
         _classNames7,
         _classNames8,
         _classNames9,
-        _this4 = this;
+        _this5 = this;
 
     var _props = this.props,
         id = _props.inputId,
@@ -774,7 +771,7 @@ var ReactTelephoneInput = function (_React$Component) {
         'div',
         {
           ref: function ref(input) {
-            _this4.flagDropDownButton = input;
+            _this5.flagDropDownButton = input;
           },
           className: flagViewClasses,
           onKeyDown: this.handleKeydown
@@ -804,7 +801,7 @@ var ReactTelephoneInput = function (_React$Component) {
           onKeyDown: this.handleInputKeyDown,
           value: formattedNumber,
           ref: function ref(input) {
-            _this4.numberInput = input;
+            _this5.numberInput = input;
           },
           type: 'tel',
           autoComplete: 'off',
