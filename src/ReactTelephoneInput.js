@@ -168,7 +168,6 @@ class ReactTelephoneInput extends React.Component {
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeydown)
     this._cursorToEnd(true)
-    this._fillDialCode()
   }
   componentWillReceiveProps(nextProps) {
     this.setState(this._mapPropsToState(nextProps))

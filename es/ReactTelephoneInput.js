@@ -408,7 +408,6 @@ var ReactTelephoneInput = function (_React$Component) {
   ReactTelephoneInput.prototype.componentDidMount = function componentDidMount() {
     document.addEventListener('keydown', this.handleKeydown);
     this._cursorToEnd(true);
-    this._fillDialCode();
   };
 
   ReactTelephoneInput.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
